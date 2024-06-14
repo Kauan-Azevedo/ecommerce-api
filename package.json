@@ -9,7 +9,8 @@
     "start": "tsc && node ./dist/main.js",
     "dev": "tsc-watch --onSuccess \"nodemon ./dist/main.js\"",
     "build": "tsc",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "create-module": "ts-node src/utils/create-module.ts"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
@@ -18,7 +19,8 @@
     "morgan": "^1.10.0",
     "pg": "^8.11.5",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.3"
+    "sequelize": "^6.37.3",
+    "shelljs": "^0.8.5"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
@@ -26,6 +28,7 @@
     "@types/express": "^4.17.21",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.14.2",
+    "@types/shelljs": "^0.8.15",
     "nodemon": "^3.1.0",
     "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",
