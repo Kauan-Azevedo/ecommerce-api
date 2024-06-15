@@ -16,7 +16,7 @@ const options = {
             description: 'Lorem ipsum',
         }
     },
-    apis: ['./src/**/*.controller.ts'],
+    apis: ['./src/**/*.router.ts'],
 }
 const specs = swaggerJsdoc(options);
 const app = express();
