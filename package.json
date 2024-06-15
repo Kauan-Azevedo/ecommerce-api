@@ -1,16 +1,17 @@
 {
-  "name": "hortifrutigranjeiro-cesusc",
+  "name": "ecommerce-api",
   "version": "1.0.0",
-  "description": "Projeto de hortifrutigranjeiro para a disciplina de Linguagem de programação II",
+  "description": "Projeto de ecommerce-api para a disciplina de Linguagem de programação II",
   "main": "src/main.js",
   "author": "GreenSpace",
   "license": "MIT",
   "scripts": {
-    "start": "tsc && node ./dist/main.js",
-    "dev": "tsc-watch --onSuccess \"nodemon ./dist/main.js\"",
-    "build": "tsc",
-    "watch": "tsc -w",
-    "create-module": "ts-node src/utils/create-module.ts"
+    "build": "tsc && tsc-alias",
+    "watch": "tsc-watch --onSuccess \"npm run alias\"",
+    "alias": "tsc-alias && npm run start",
+    "start": "nodemon ./dist/main.js",
+    "create-module": "ts-node src/utils/create-module.ts",
+    "dev": "npm run watch"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
@@ -20,7 +21,9 @@
     "pg": "^8.11.5",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.3",
-    "shelljs": "^0.8.5"
+    "shelljs": "^0.8.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
@@ -29,9 +32,13 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.14.2",
     "@types/shelljs": "^0.8.15",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.6",
     "nodemon": "^3.1.0",
+    "npm-run-all": "^4.1.5",
     "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.10",
     "tsc-watch": "^6.2.0",
     "typescript": "^5.4.5"
   }
