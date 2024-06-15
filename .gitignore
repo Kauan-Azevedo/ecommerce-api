@@ -25,4 +25,4 @@
 **/*.njsproj
 **/*.sln
 **/*.sw?
-**/*.lock.json
+**/*.lock
