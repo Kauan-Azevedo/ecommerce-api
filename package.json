@@ -13,7 +13,8 @@
     "start:dev": "nodemon --watch 'src/' --exec 'ts-node -r tsconfig-paths/register  src/main.ts' -e ts",
     "create-module": "ts-node src/utils/create-module.ts",
     "dev": "npm run watch",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "format": "prettier --write 'src/**/*.{js,ts,md,json}' --config ./.prettierrc"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
