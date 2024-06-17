@@ -52,7 +52,7 @@ const userController = new UsersController(userService);
  *       400:
  *         $ref: '#/components/responses/Invalid'
  */
-router.post('/', userController.createUser.bind(userController));
+router.post("/", userController.createUser.bind(userController));
 
 /**
  * @swagger
@@ -71,7 +71,7 @@ router.post('/', userController.createUser.bind(userController));
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-router.get('/:id', userController.getUserById.bind(userController));
+router.get("/:id", userController.getUserById.bind(userController));
 
 /**
  * @swagger
@@ -88,7 +88,7 @@ router.get('/:id', userController.getUserById.bind(userController));
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-router.get('/', userController.getAllUsers.bind(userController));
+router.get("/", userController.getAllUsers.bind(userController));
 
 /**
  * @swagger
@@ -111,7 +111,7 @@ router.get('/', userController.getAllUsers.bind(userController));
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-router.put('/:id', userController.updateUser.bind(userController));
+router.put("/:id", userController.updateUser.bind(userController));
 
 /**
  * @swagger
@@ -130,6 +130,6 @@ router.put('/:id', userController.updateUser.bind(userController));
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-router.delete('/:id', userController.deleteUser.bind(userController));
+router.delete("/:id", userController.deleteUser.bind(userController));
 
 export default router;

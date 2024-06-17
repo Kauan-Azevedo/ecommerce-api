@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 import { UsersService } from "../services/user.service";
 
 class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   async createUser(req: Request, res: Response) {
     const user = await this.usersService.createUser(req.body);
@@ -28,7 +28,7 @@ class UsersController {
   async deleteUser(req: Request, res: Response) {
     const userId = Number(req.params.id);
     await this.usersService.deleteUser(userId);
-    res.json({ message: 'User deleted successfully' });
+    res.json({ message: "User deleted successfully" });
   }
 }
 
