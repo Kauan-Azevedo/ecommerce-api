@@ -9,7 +9,8 @@
     "build": "tsc && tsc-alias",
     "watch": "tsc-watch --onSuccess \"npm run alias\"",
     "alias": "tsc-alias && npm run start",
-    "start": "nodemon ./dist/main.js",
+    "start": "node ./dist/main.js",
+    "start:dev": "nodemon --watch 'src/' --exec 'ts-node -r tsconfig-paths/register  src/main.ts' -e ts",
     "create-module": "ts-node src/utils/create-module.ts",
     "dev": "npm run watch"
   },
@@ -40,6 +41,7 @@
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.10",
     "tsc-watch": "^6.2.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5"
   }
 }
