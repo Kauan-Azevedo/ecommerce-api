@@ -35,8 +35,7 @@ User.init(
     sequelize: sequelize, // Sequelize instance
     modelName: "User",
     paranoid: true, // Soft deletes (keeps deletedAt column)
-  }
+  },
 );
-
 
 export { User };
