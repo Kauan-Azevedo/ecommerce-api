@@ -26,9 +26,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan('dev'));
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // Routers
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/users', usersRotuer);
 
 
