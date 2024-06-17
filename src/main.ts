@@ -5,7 +5,7 @@ import cors from "cors";
 import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
-import usersRotuer from "./user/router/user.router";
+import usersRouter from "./user/router/user.router";
 
 const options = {
   definition: {
@@ -31,7 +31,7 @@ app.use(morgan("dev"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // Routers
-app.use("/users", usersRotuer);
+app.use("/users", usersRouter);
 
 // Rota inicial
 app.get("/", (req: Request, res: Response) => {
