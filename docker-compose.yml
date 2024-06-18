@@ -10,7 +10,7 @@ services:
     environment:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: ${DB_HOST}
+      DB_HOST: ${DB_HOST_DOCKER}
       DB_PORT: ${DB_PORT}
       DB_SCHEMA: ${DB_SCHEMA}
       DB_NAME: ${DB_NAME}
