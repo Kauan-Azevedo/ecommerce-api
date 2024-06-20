@@ -53,7 +53,7 @@ export { ${className}Controller };`;
         break;
       case "services":
         filePath = path.join(dirPath, `${moduleName}.service.ts`);
-        fileContent = `import { prisma } from "@/db/db.config";
+        fileContent = `import { prisma } from "@/db/prisma.service";
 
 class ${className}Service {
   constructor() {
