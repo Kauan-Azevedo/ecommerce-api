@@ -12,7 +12,7 @@ model User {
   name      String    @db.VarChar(128)
   email     String    @db.VarChar(128)
   password  String    @db.VarChar(128)
-  createdAt DateTime  @db.Timestamptz(6)
-  updatedAt DateTime  @db.Timestamptz(6)
-  deletedAt DateTime? @db.Timestamptz(6)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime? @db.Timestamp
 }

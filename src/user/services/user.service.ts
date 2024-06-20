@@ -1,24 +1,25 @@
-import { User } from "../model/user.model";
+import { prisma } from "@/db/db.config";
+import { User } from "@prisma/client";
 
 class UsersService {
-  async createUser(user: Omit<string, any>) {
-    return User.create(user);
+  async createUser(user: User) {
+    return prisma.user.create({ data: user });
   }
 
   async getUserById(id: number) {
-    return User.findByPk(id);
+    return prisma.user.findUnique({ where: { id } });
   }
 
   async getAllUsers() {
-    return User.findAll();
+    return prisma.user.findMany();
   }
 
   async updateUser(id: number, user: User) {
-    return User.update(user, { where: { id } });
+    return prisma.user.update({ where: { id }, data: user });
   }
 
   async deleteUser(id: number) {
-    return User.destroy({ where: { id } });
+    return prisma.user.delete({ where: { id } });
   }
 }
 

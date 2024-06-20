@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { sequelize } from "./db/db.config";
+// import { sequelize } from "./db/db.config";
 import bodyParser from "body-parser";
 import cors from "cors";
 import morgan from "morgan";
@@ -39,7 +39,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // Sincronização do Sequelize
-sequelize.sync();
+// sequelize.sync();
 
 // Iniciar o servidor
 app.listen(port, () => {
