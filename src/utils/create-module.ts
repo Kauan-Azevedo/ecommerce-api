@@ -4,7 +4,7 @@ import * as path from "path";
 
 function createModule(moduleName: string): void {
   const baseDir = path.resolve(__dirname, "..", "..", "src", moduleName);
-  const dirs = ["controller", "model", "services", "router"];
+  const dirs = ["controller", "services", "router"];
 
   const toPascalCase = (str: string) => {
     return str.replace(
@@ -51,30 +51,9 @@ class ${className}Controller {
 export { ${className}Controller };`;
         fs.writeFileSync(filePath, fileContent);
         break;
-      case "model":
-        filePath = path.join(dirPath, `${moduleName}.model.ts`);
-        fileContent = `import { DataTypes, Model } from "sequelize";
-import { sequelize } from "@/db/db.config";
-
-class ${className} extends Model {}
-
-${className}.init(
-  {
-    // Your model attributes here
-  },
-  {
-    sequelize,
-    modelName: "${className}",
-    paranoid: true,
-  }
-);
-
-export { ${className} };`;
-        fs.writeFileSync(filePath, fileContent);
-        break;
       case "services":
         filePath = path.join(dirPath, `${moduleName}.service.ts`);
-        fileContent = `import { ${className} } from "../model/${moduleName}.model";
+        fileContent = `import { prisma } from "@/db/prisma.service";
 
 class ${className}Service {
   constructor() {

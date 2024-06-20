@@ -21,6 +21,7 @@
     "test:push": "npm run test --coverage"
   },
   "dependencies": {
+    "@prisma/client": "^5.15.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -29,6 +30,7 @@
     "morgan": "^1.10.0",
     "pg": "^8.11.5",
     "pg-hstore": "^2.3.4",
+    "prisma": "^5.15.1",
     "sequelize": "^6.37.3",
     "shelljs": "^0.8.5",
     "swagger-jsdoc": "^6.2.8",
