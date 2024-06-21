@@ -11,7 +11,9 @@ COPY package*.json ./
 COPY scripts ./scripts
 
 RUN apt-get update && apt-get install -y netcat-openbsd \
-    && npm install && chmod -R +x /usr/src/app/scripts
+    && npm install \
+    && npx --package typescript tsc --init \
+    && chmod -R +x /usr/src/app/scripts
 
 # Copy local code to the container image.
 COPY . .
