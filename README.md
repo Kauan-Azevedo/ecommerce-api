@@ -46,10 +46,9 @@ Vocês trabalham para um startup que irá implementar o backend, uma API Rest, p
 
 ### Order, Payment_method, Payment_status
 - [ ] Implementar o modelo `Order`.
-- [ ] Implementar o modelo `Payment_method`.
-- [ ] Implementar o modelo `Payment_status`.
-- [ ] Criar endpoints para CRUD de `Order`.
-- [ ] Integrar métodos de pagamento ao processo de checkout.
+- [ ✅] Implementar o modelo `Payment_method`.
+- [✅ ] Implementar o modelo `Payment_status`.
+- [ ✅] Criar endpoints para CRUD de `Order`.
 
 ### Endpoints de report, supervisão geral dos endpoints
 - [ ] Desenvolver endpoints de relatórios.
