@@ -1,19 +1,20 @@
-import { Request, Response, NextFunction } from "express"
-import { PaymentStatusService } from "../services/payment_status.service"
+import { Request, Response } from "express"
+import { PaymentStatusService } from "../services/paymentStatus.service"
 
 class PaymentStatusController {
   constructor(private readonly paymentStatusService: PaymentStatusService) { }
 
-  async createPaymentStatus(req: Request, res: Response, next: NextFunction) {
+  async createPaymentStatus(req: Request, res: Response) {
     try {
       const paymentStatus = await this.paymentStatusService.createPaymentStatus(req.body)
       res.json(paymentStatus)
     } catch (error) {
-      next(error) // Forward error to the next error handling middleware
+      console.error(error)
+      res.statusCode = 400
     }
   }
 
-  async getPaymentStatusById(req: Request, res: Response, next: NextFunction) {
+  async getPaymentStatusById(req: Request, res: Response) {
     try {
       const paymentStatus = await this.paymentStatusService.getPaymentStatusById(Number(req.params.id))
       if (!paymentStatus) {
@@ -21,11 +22,12 @@ class PaymentStatusController {
       }
       res.json(paymentStatus)
     } catch (error) {
-      next(error)
+      console.error(error)
+      res.statusCode = 400
     }
   }
 
-  async updatePaymentStatus(req: Request, res: Response, next: NextFunction) {
+  async updatePaymentStatus(req: Request, res: Response) {
     try {
       const statusId = Number(req.params.id)
       const paymentStatus = await this.paymentStatusService.updatePaymentStatus(statusId, req.body)
@@ -34,20 +36,22 @@ class PaymentStatusController {
       }
       res.json(paymentStatus)
     } catch (error) {
-      next(error)
+      console.error(error)
+      res.statusCode = 400
     }
   }
 
-  async getAllPaymentStatuses(req: Request, res: Response, next: NextFunction) {
+  async getAllPaymentStatuses(req: Request, res: Response) {
     try {
       const paymentStatuses = await this.paymentStatusService.getAllPaymentStatuses()
       res.json(paymentStatuses)
     } catch (error) {
-      next(error)
+      console.error(error)
+      res.statusCode = 400
     }
   }
 
-  async deletePaymentStatus(req: Request, res: Response, next: NextFunction) {
+  async deletePaymentStatus(req: Request, res: Response) {
     try {
       const statusId = Number(req.params.id)
       const deleteResult = await this.paymentStatusService.deletePaymentStatus(statusId)
@@ -56,7 +60,8 @@ class PaymentStatusController {
       }
       res.json({ message: "Payment status deleted successfully" })
     } catch (error) {
-      next(error)
+      console.error(error)
+      res.statusCode = 400
     }
   }
 }
