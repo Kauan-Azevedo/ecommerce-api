@@ -24,3 +24,11 @@ model PaymentStatus {
   updatedAt DateTime  @default(now()) @updatedAt
   deletedAt DateTime? @db.Timestamp
 }
+
+model PaymentMethod {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(50)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime? @db.Timestamp
+}
