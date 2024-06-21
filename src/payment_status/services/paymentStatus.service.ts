@@ -7,7 +7,7 @@ class PaymentStatusService {
     try {
       return await prisma.payment_status.create({ data: status })
     } catch (error) {
-      this.handleError(error)
+      console.error("\n\n" + error + "\n\n")
     }
   }
 
@@ -15,7 +15,7 @@ class PaymentStatusService {
     try {
       return await prisma.payment_status.findUnique({ where: { id } })
     } catch (error) {
-      this.handleError(error)
+      console.error("\n\n" + error + "\n\n")
     }
   }
 
@@ -23,35 +23,36 @@ class PaymentStatusService {
     try {
       return await prisma.payment_status.findMany()
     } catch (error) {
-      this.handleError(error)
+      console.error("\n\n" + error + "\n\n")
     }
   }
 
   async updatePaymentStatus(id: number, status: Payment_status) {
     try {
-      return await prisma.payment_status.update({ where: { id }, data: status })
+      const record = await prisma.payment_status.update({ where: { id }, data: status })
+
+      if (!record) {
+        throw new Error(`Payment status with ID ${id} not found on update.`);
+      }
+
+      return record
+
     } catch (error) {
-      this.handleError(error)
+      console.error("\n\n" + error + "\n\n")
     }
   }
 
   async deletePaymentStatus(id: number) {
     try {
-      return await prisma.payment_status.delete({ where: { id } })
-    } catch (error) {
-      this.handleError(error)
-    }
-  }
+      const record = await prisma.payment_status.findUnique({ where: { id } });
 
-  private handleError(error: any) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      // Handle known errors
-      console.error("A known error occurred: ", error.message)
-      throw new Error("A database error occurred.")
-    } else {
-      // Handle unexpected errors
-      console.error("An unexpected error occurred: ", error)
-      throw new Error("An unexpected error occurred.")
+      if (!record) {
+        throw new Error(`Payment status with ID ${id} not found.`);
+      }
+
+      return await prisma.payment_status.delete({ where: { id } });
+    } catch (error) {
+      console.error("\n" + error + "\n\n")
     }
   }
 }

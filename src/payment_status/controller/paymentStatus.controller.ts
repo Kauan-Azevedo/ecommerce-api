@@ -55,9 +55,11 @@ class PaymentStatusController {
     try {
       const statusId = Number(req.params.id)
       const deleteResult = await this.paymentStatusService.deletePaymentStatus(statusId)
+
       if (!deleteResult) {
         return res.status(404).json({ message: "Payment status not found" })
       }
+
       res.json({ message: "Payment status deleted successfully" })
     } catch (error) {
       console.error(error)
