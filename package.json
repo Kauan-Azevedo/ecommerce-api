@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc && tsc-alias",
+    "seed": "ts-node prisma/seed.ts",
     "watch": "tsc-watch --onSuccess \"npm run alias\"",
     "alias": "tsc-alias && npm run start",
     "start": "node ./dist/main.js",
@@ -22,11 +23,15 @@
   },
   "dependencies": {
     "@prisma/client": "^5.15.1",
+    "@types/jsonwebtoken": "^9.0.6",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "git-commit-msg-linter": "^5.0.8",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "pg": "^8.11.5",
     "pg-hstore": "^2.3.4",
