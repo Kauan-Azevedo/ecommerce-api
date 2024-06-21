@@ -37,7 +37,7 @@ model PaymentMethod {
 }
 
 model Order {
-  id BigInt @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
   paymentMethodId Int
