@@ -8,11 +8,37 @@ datasource db {
 }
 
 model User {
+  id            Int        @id @default(autoincrement())
+  id_permission Int
+  first_name    String     @db.VarChar(128)
+  last_name     String     @db.VarChar(128)
+  email         String     @db.VarChar(256)
+  phone_number  String?    @db.VarChar(16)
+  password      String     @db.VarChar(128)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @default(now()) @updatedAt
+  deletedAt     DateTime?  @db.Timestamp
+  permission    Permission @relation(fields: [id_permission], references: [id])
+
+  @@index([id_permission])
+}
+
+model Permission {
   id        Int       @id @default(autoincrement())
   name      String    @db.VarChar(128)
-  email     String    @db.VarChar(128)
-  password  String    @db.VarChar(128)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
   deletedAt DateTime? @db.Timestamp
+  users     User[]
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(100)
+  description String    @db.Text
+  value       Decimal   @db.Decimal
+  stock       Int       @db.Integer
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+  deletedAt   DateTime? @db.Timestamp
 }
