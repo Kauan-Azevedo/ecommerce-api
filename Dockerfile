@@ -10,6 +10,9 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 COPY scripts ./scripts
 
+# Add the scripts directory to the PATH
+ENV PATH="/usr/src/app/scripts:${PATH}"
+
 RUN apt-get update && apt-get install -y netcat-openbsd \
     && npm install \
     && npx --package typescript tsc --init \

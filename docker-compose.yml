@@ -21,15 +21,7 @@ services:
       - /usr/src/app/node_modules
     env_file:
       - ./.env
-    develop:
-      watch:
-        - action: sync
-          path: ./src
-          target: /app/src
 
-        - action: rebuild
-          path: package.json
-          target: /app
   db:
     container_name: ecommerce-db
     image: postgres:13
