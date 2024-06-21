@@ -17,7 +17,7 @@ model User {
   deletedAt DateTime? @db.Timestamp
 }
 
-model Payment_status {
+model PaymentStatus {
   id        Int       @id @default(autoincrement())
   name      String    @db.VarChar(50)
   createdAt DateTime  @default(now())

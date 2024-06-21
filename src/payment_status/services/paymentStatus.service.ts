@@ -1,17 +1,17 @@
 import { prisma } from "@/db/prisma.service"
-import { Payment_status } from ".prisma/client"
+import { PaymentStatus } from ".prisma/client"
 import { Prisma } from '@prisma/client';
 
 class PaymentStatusService {
-  async createPaymentStatus(status: Payment_status) {
+  async createPaymentStatus(status: PaymentStatus) {
     try {
-      const record = await prisma.payment_status.findFirst({ where: { name: status.name } })
+      const record = await prisma.paymentStatus.findFirst({ where: { name: status.name } })
 
       if (record) {
         throw new Error(`Payment status with name ${status.name} already exists.`);
       }
 
-      return await prisma.payment_status.create({ data: status })
+      return await prisma.paymentStatus.create({ data: status })
 
     } catch (error) {
       console.error("\n\n" + error + "\n\n")
@@ -20,7 +20,7 @@ class PaymentStatusService {
 
   async getPaymentStatusById(id: number) {
     try {
-      return await prisma.payment_status.findUnique({ where: { id } })
+      return await prisma.paymentStatus.findUnique({ where: { id } })
     } catch (error) {
       console.error("\n\n" + error + "\n\n")
     }
@@ -28,15 +28,15 @@ class PaymentStatusService {
 
   async getAllPaymentStatuses() {
     try {
-      return await prisma.payment_status.findMany()
+      return await prisma.paymentStatus.findMany()
     } catch (error) {
       console.error("\n\n" + error + "\n\n")
     }
   }
 
-  async updatePaymentStatus(id: number, status: Payment_status) {
+  async updatePaymentStatus(id: number, status: PaymentStatus) {
     try {
-      const record = await prisma.payment_status.update({ where: { id }, data: status })
+      const record = await prisma.paymentStatus.update({ where: { id }, data: status })
 
       if (!record) {
         throw new Error(`Payment status with ID ${id} not found on update.`);
@@ -51,13 +51,13 @@ class PaymentStatusService {
 
   async deletePaymentStatus(id: number) {
     try {
-      const record = await prisma.payment_status.findUnique({ where: { id } });
+      const record = await prisma.paymentStatus.findUnique({ where: { id } });
 
       if (!record) {
         throw new Error(`Payment status with ID ${id} not found.`);
       }
 
-      return await prisma.payment_status.delete({ where: { id } });
+      return await prisma.paymentStatus.delete({ where: { id } });
     } catch (error) {
       console.error("\n" + error + "\n\n")
     }
