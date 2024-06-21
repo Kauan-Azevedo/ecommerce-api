@@ -15,6 +15,7 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
   deletedAt DateTime? @db.Timestamp
+  Order     Order[]
 }
 
 model PaymentStatus {
@@ -23,6 +24,7 @@ model PaymentStatus {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
   deletedAt DateTime? @db.Timestamp
+  Order     Order[]
 }
 
 model PaymentMethod {
@@ -31,4 +33,27 @@ model PaymentMethod {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
   deletedAt DateTime? @db.Timestamp
+  Order     Order[]
+}
+
+model Order {
+  id BigInt @id @default(autoincrement())
+
+  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  paymentMethodId Int
+
+  paymentStatus   PaymentStatus @relation(fields: [paymentStatusId], references: [id])
+  paymentStatusId Int
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  //ADD HERE THE ORDER INFO WHEN THE MODEL IS READY
+
+  description String    @db.Text
+  date        DateTime  @default(now()) @db.Timestamp
+  value       Decimal
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+  deletedAt   DateTime? @db.Timestamp
 }
