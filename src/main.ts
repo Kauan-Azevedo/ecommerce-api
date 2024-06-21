@@ -1,3 +1,5 @@
+import makeDatabaseUrl from './utils/make-databaseurl';
+
 import express, { Request, Response } from "express";
 // import { sequelize } from "./db/db.config";
 import bodyParser from "body-parser";
@@ -6,6 +8,8 @@ import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import usersRouter from "./user/router/user.router";
+
+makeDatabaseUrl();
 
 const options = {
   definition: {
