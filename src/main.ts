@@ -8,6 +8,7 @@ import morgan from "morgan"
 import swaggerUi from "swagger-ui-express"
 import swaggerJsdoc from "swagger-jsdoc"
 import usersRouter from "./user/router/user.router"
+import paymentStatusRouter from "./payment_status/router/paymentStatus.router"
 
 makeDatabaseUrl()
 
@@ -27,6 +28,7 @@ const app = express()
 const port = 3000
 
 // oi
+// bom dia princesa 😘
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -35,7 +37,11 @@ app.use(morgan("dev"))
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs))
 
 // Routers
+//Users routes
 app.use("/users", usersRouter)
+
+//Payment status routes
+app.use("/paymentstatus", paymentStatusRouter)
 
 // Rota inicial
 app.get("/", (req: Request, res: Response) => {
