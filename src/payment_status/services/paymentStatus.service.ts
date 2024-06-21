@@ -5,7 +5,14 @@ import { Prisma } from '@prisma/client';
 class PaymentStatusService {
   async createPaymentStatus(status: Payment_status) {
     try {
+      const record = await prisma.payment_status.findFirst({ where: { name: status.name } })
+
+      if (record) {
+        throw new Error(`Payment status with name ${status.name} already exists.`);
+      }
+
       return await prisma.payment_status.create({ data: status })
+
     } catch (error) {
       console.error("\n\n" + error + "\n\n")
     }

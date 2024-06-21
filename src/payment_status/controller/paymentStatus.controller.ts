@@ -7,6 +7,11 @@ class PaymentStatusController {
   async createPaymentStatus(req: Request, res: Response) {
     try {
       const paymentStatus = await this.paymentStatusService.createPaymentStatus(req.body)
+
+      if (!paymentStatus) {
+        return res.status(409).json({ message: `Payment status with name ${req.body.name} already exists.` })
+      }
+
       res.json(paymentStatus)
     } catch (error) {
       console.error(error)
