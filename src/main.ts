@@ -12,6 +12,7 @@ import swaggerJsdoc from "swagger-jsdoc"
 import usersRouter from "./user/router/user.router"
 import paymentStatusRouter from "./payment_status/router/paymentStatus.router"
 import paymentMethodRouter from "./payment_method/router/paymentMethod.router"
+import orderRouter from "./order/router/order.router"
 
 makeDatabaseUrl()
 
@@ -58,7 +59,10 @@ app.use(cors())
 app.use(morgan("dev"))
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs))
 
-// Routers
+///////////////////////////////////////////////////////////////////////////
+//////////////////////////ROUTES//////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
 //Users routes
 app.use("/users", usersRouter)
 
@@ -67,6 +71,9 @@ app.use("/paymentstatus", paymentStatusRouter)
 
 //Payment method routes
 app.use("/paymentmethod", paymentMethodRouter)
+
+//Order routes
+app.use("/order", orderRouter)
 
 // Rota inicial
 app.get("/", (req: Request, res: Response) => {
