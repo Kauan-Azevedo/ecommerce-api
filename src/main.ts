@@ -1,15 +1,16 @@
-import makeDatabaseUrl from './utils/make-databaseurl';
+import makeDatabaseUrl from './utils/make-databaseurl'
 
-import express, { Request, Response } from "express";
-// import { sequelize } from "./db/db.config";
-import bodyParser from "body-parser";
-import cors from "cors";
-import morgan from "morgan";
-import swaggerUi from "swagger-ui-express";
-import swaggerJsdoc from "swagger-jsdoc";
-import usersRouter from "./user/router/user.router";
+import express, { Request, Response } from "express"
+// import { sequelize } from "./db/db.config"
+import bodyParser from "body-parser"
+import cors from "cors"
+import morgan from "morgan"
+import swaggerUi from "swagger-ui-express"
+import swaggerJsdoc from "swagger-jsdoc"
+import usersRouter from "./user/router/user.router"
+import paymentStatusRouter from "./payment_status/router/paymentStatus.router"
 
-makeDatabaseUrl();
+makeDatabaseUrl()
 
 const options = {
   definition: {
@@ -21,31 +22,36 @@ const options = {
     },
   },
   apis: ["./src/**/*.router.ts"],
-};
-const specs = swaggerJsdoc(options);
-const app = express();
-const port = 3000;
+}
+const specs = swaggerJsdoc(options)
+const app = express()
+const port = 3000
 
 // oi
+// bom dia princesa 😘
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
-app.use(morgan("dev"));
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cors())
+app.use(morgan("dev"))
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs))
 
 // Routers
-app.use("/users", usersRouter);
+//Users routes
+app.use("/users", usersRouter)
+
+//Payment status routes
+app.use("/paymentstatus", paymentStatusRouter)
 
 // Rota inicial
 app.get("/", (req: Request, res: Response) => {
-  res.send("Welcome to Ecommerce API!");
-});
+  res.send("Welcome to Ecommerce API!")
+})
 
 // Sincronização do Sequelize
-// sequelize.sync();
+// sequelize.sync()
 
 // Iniciar o servidor
 app.listen(port, () => {
-  console.log(`🚀 Server is running at http://localhost:${port} 🚀`);
-});
+  console.log(`🚀 Server is running at http://localhost:${port} 🚀`)
+})
