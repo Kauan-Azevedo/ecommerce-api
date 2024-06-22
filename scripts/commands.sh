@@ -5,4 +5,5 @@ set -e
 
 # Executa o comando npm run dev
 sh ./scripts/wait_db.sh
+sh ./scripts/npm_prisma_migrate.sh
 sh ./scripts/npm_run.sh
