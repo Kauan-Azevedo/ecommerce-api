@@ -11,6 +11,7 @@ import usersRouter from "./user/router/user.router";
 import paymentStatusRouter from "./payment_status/router/paymentStatus.router";
 import paymentMethodRouter from "./payment_method/router/paymentMethod.router";
 import authRouter from "./auth/router/auth.router";
+import permissionRouter from "./permission/router/permission.router";
 
 const options = {
   definition: {
@@ -71,9 +72,10 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // Routers
 app.use("/users", usersRouter);
-app.use("/paymentstatus", paymentStatusRouter)
-app.use("/paymentmethod", paymentMethodRouter)
+app.use("/paymentstatus", paymentStatusRouter);
+app.use("/paymentmethod", paymentMethodRouter);
 app.use("/auth", authRouter);
+app.use("/permissions", permissionRouter);
 
 // Rota inicial
 app.get("/", (req: Request, res: Response) => {
