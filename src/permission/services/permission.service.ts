@@ -13,7 +13,6 @@ class PermissionService {
   }
 
   async getPermissions() {
-    console.log("getPermissions");
     return await prisma.permission.findMany();
   }
 

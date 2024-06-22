@@ -20,7 +20,15 @@ class UsersService {
   }
 
   async getAllUsers() {
-    return prisma.user.findMany();
+    return prisma.user.findMany({
+      include: {
+        permission: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
   }
 
   async updateUser(id: number, user: User) {
