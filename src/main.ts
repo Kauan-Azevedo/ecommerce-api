@@ -1,19 +1,17 @@
-import makeDatabaseUrl from './utils/make-databaseurl'
+import express, { Request, Response } from "express";
+import makeDatabaseUrl from "./utils/make-databaseurl";
+// import { sequelize } from "./db/db.config";
+import bodyParser from "body-parser";
+import cors from "cors";
+import morgan from "morgan";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
 
-import express, { Request, Response } from "express"
-// import { sequelize } from "./db/db.config"
-import bodyParser from "body-parser"
-import cors from "cors"
-import morgan from "morgan"
-import swaggerUi from "swagger-ui-express"
-import swaggerJsdoc from "swagger-jsdoc"
-
-// Importing Routers
-import usersRouter from "./user/router/user.router"
-import paymentStatusRouter from "./payment_status/router/paymentStatus.router"
-import paymentMethodRouter from "./payment_method/router/paymentMethod.router"
-
-makeDatabaseUrl()
+import usersRouter from "./user/router/user.router";
+import paymentStatusRouter from "./payment_status/router/paymentStatus.router";
+import paymentMethodRouter from "./payment_method/router/paymentMethod.router";
+import authRouter from "./auth/router/auth.router";
+import permissionRouter from "./permission/router/permission.router";
 
 const options = {
   definition: {
@@ -21,7 +19,8 @@ const options = {
     info: {
       title: "E-commerce API",
       version: "1.0.0",
-      description: "Esta aplicação é um projeto de backend para um sistema de e-commerce, \
+      description:
+        "Esta aplicação é um projeto de backend para um sistema de e-commerce, \
       desenvolvido como parte de uma avaliação (N3) para um cenário fictício onde os desenvo\
       lvedores trabalham para uma startup. \n\nO objetivo é implementar uma API Rest que atenda \
       aos requisitos fornecidos pelo cliente, para posterior implantação no servidor do cliente. O \
@@ -42,41 +41,48 @@ const options = {
       incluindo a implementação de modelos e endpoints específicos, desenvolvimento de testes unitários, e \
       supervisão geral dos endpoints.",
     },
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+    security: [
+      {
+        BearerAuth: [],
+      },
+    ],
   },
   apis: ["./src/**/*.router.ts"],
-}
-const specs = swaggerJsdoc(options)
-const app = express()
-const port = 3000
+};
+const specs = swaggerJsdoc(options);
+const app = express();
+const port = 3000;
 
 // oi
-// bom dia princesa 😘
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(cors())
-app.use(morgan("dev"))
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+app.use(morgan("dev"));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // Routers
-//Users routes
-app.use("/users", usersRouter)
-
-//Payment status routes
-app.use("/paymentstatus", paymentStatusRouter)
-
-//Payment method routes
-app.use("/paymentmethod", paymentMethodRouter)
+app.use("/users", usersRouter);
+app.use("/paymentstatus", paymentStatusRouter);
+app.use("/paymentmethod", paymentMethodRouter);
+app.use("/auth", authRouter);
+app.use("/permissions", permissionRouter);
 
 // Rota inicial
 app.get("/", (req: Request, res: Response) => {
-  res.send("Welcome to Ecommerce API!")
-})
-
-// Sincronização do Sequelize
-// sequelize.sync()
+  res.send("Welcome to Ecommerce API!");
+});
 
 // Iniciar o servidor
 app.listen(port, () => {
-  console.log(`🚀 Server is running at http://localhost:${port} 🚀`)
-})
+  console.log(`🚀 Server is running at http://localhost:${port} 🚀`);
+});

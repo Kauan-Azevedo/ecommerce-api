@@ -1,9 +1,18 @@
 import { prisma } from "@/db/prisma.service";
 import { User } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 class UsersService {
   async createUser(user: User) {
-    return prisma.user.create({ data: user });
+    const { password } = user;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    return prisma.user.create({
+      data: {
+        ...user,
+        password: hashedPassword,
+      },
+    });
   }
 
   async getUserById(id: number) {
@@ -11,7 +20,15 @@ class UsersService {
   }
 
   async getAllUsers() {
-    return prisma.user.findMany();
+    return prisma.user.findMany({
+      include: {
+        permission: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
   }
 
   async updateUser(id: number, user: User) {
