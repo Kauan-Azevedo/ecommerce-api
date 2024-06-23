@@ -19,6 +19,7 @@ model User {
   updatedAt     DateTime   @default(now()) @updatedAt
   deletedAt     DateTime?  @db.Timestamp
   permission    Permission @relation(fields: [id_permission], references: [id])
+  orders        Order[]
 
   @@index([id_permission])
 }
@@ -41,6 +42,8 @@ model Product {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now()) @updatedAt
   deletedAt   DateTime? @db.Timestamp
+
+  orderInfos OrderInfo[]
 }
 
 model PaymentStatus {
@@ -49,6 +52,7 @@ model PaymentStatus {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
   deletedAt DateTime? @db.Timestamp
+  orders    Order[]
 }
 
 model PaymentMethod {
@@ -57,4 +61,38 @@ model PaymentMethod {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
   deletedAt DateTime? @db.Timestamp
+  orders    Order[]
+}
+
+model Order {
+  id              Int       @id @default(autoincrement())
+  paymentMethodId Int
+  paymentStatusId Int
+  userId          Int
+  description     String    @db.Text
+  date            DateTime  @default(now()) @db.Timestamp
+  value           Decimal
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now()) @updatedAt
+  deletedAt       DateTime? @db.Timestamp
+
+  paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  paymentStatus PaymentStatus @relation(fields: [paymentStatusId], references: [id])
+  user          User          @relation(fields: [userId], references: [id])
+  orderInfos    OrderInfo[]
+
+  @@index([paymentMethodId])
+  @@index([paymentStatusId])
+  @@index([userId])
+}
+
+model OrderInfo {
+  product_id Int
+  order_id   Int
+  quantity   Int
+
+  product Product @relation(fields: [product_id], references: [id])
+  order   Order   @relation(fields: [order_id], references: [id])
+
+  @@id([product_id, order_id])
 }
