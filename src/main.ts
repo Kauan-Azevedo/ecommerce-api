@@ -13,6 +13,7 @@ import paymentMethodRouter from "./payment_method/router/paymentMethod.router";
 import authRouter from "./auth/router/auth.router";
 import permissionRouter from "./permission/router/permission.router";
 
+makeDatabaseUrl()
 const options = {
   definition: {
     openapi: "3.0.0",
