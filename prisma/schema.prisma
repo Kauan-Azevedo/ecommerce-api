@@ -45,7 +45,7 @@ model Product {
 
 model PaymentStatus {
   id        Int       @id @default(autoincrement())
-  name      String    @db.VarChar(50)
+  name      String    @unique @db.VarChar(50)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
   deletedAt DateTime? @db.Timestamp
@@ -53,7 +53,7 @@ model PaymentStatus {
 
 model PaymentMethod {
   id        Int       @id @default(autoincrement())
-  name      String    @db.VarChar(50)
+  name      String    @unique @db.VarChar(50)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
   deletedAt DateTime? @db.Timestamp
