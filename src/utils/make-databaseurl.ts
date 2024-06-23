@@ -41,4 +41,8 @@ const makeDatabaseUrl = () => {
     exportToEnv(databaseUrl)
 }
 
+if (require.main === module) {
+    makeDatabaseUrl()
+}
+
 export default makeDatabaseUrl
