@@ -34,16 +34,17 @@ model Permission {
 }
 
 model Product {
-  id          Int       @id @default(autoincrement())
-  name        String    @db.VarChar(100)
-  description String    @db.Text
-  value       Decimal   @db.Decimal
-  stock       Int       @db.Integer
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now()) @updatedAt
-  deletedAt   DateTime? @db.Timestamp
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String?
+  value       Float
+  stock       Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  deletedAt   DateTime?
+  OrderInfo   OrderInfo[]
 
-  orderInfos OrderInfo[]
+  @@map("Product")
 }
 
 model PaymentStatus {
@@ -64,35 +65,32 @@ model PaymentMethod {
   orders    Order[]
 }
 
+model OrderInfo {
+  id        Int     @id @default(autoincrement())
+  productId Int
+  orderId   Int
+  quantity  Int
+  product   Product @relation(fields: [productId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id], name: "OrderToOrderInfo")
+
+  @@map("Order_Info")
+}
+
 model Order {
-  id              Int       @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   paymentMethodId Int
   paymentStatusId Int
   userId          Int
-  description     String    @db.Text
-  date            DateTime  @default(now()) @db.Timestamp
-  value           Decimal
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @default(now()) @updatedAt
-  deletedAt       DateTime? @db.Timestamp
+  description     String?
+  date            DateTime
+  value           Float
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @default(now()) @updatedAt
+  deletedAt       DateTime?
+  user            User          @relation(fields: [userId], references: [id])
+  paymentStatus   PaymentStatus @relation(fields: [paymentStatusId], references: [id])
+  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  orderInfos      OrderInfo[]   @relation(name: "OrderToOrderInfo")
 
-  paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
-  paymentStatus PaymentStatus @relation(fields: [paymentStatusId], references: [id])
-  user          User          @relation(fields: [userId], references: [id])
-  orderInfos    OrderInfo[]
-
-  @@index([paymentMethodId])
-  @@index([paymentStatusId])
-  @@index([userId])
-}
-
-model OrderInfo {
-  product_id Int
-  order_id   Int
-  quantity   Int
-
-  product Product @relation(fields: [product_id], references: [id])
-  order   Order   @relation(fields: [order_id], references: [id])
-
-  @@id([product_id, order_id])
+  @@map("Order")
 }
