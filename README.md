@@ -1,3 +1,20 @@
+# E-commerce API 💹
+
+### Como rodar a API via Docker 🐳
+
+Copie o arquivo de referencia `.env-example` e crie seu proprio `.env`.
+
+Requisitos:
+ - DockerEngine
+ - Node.js
+ - NPM
+
+Depois no seu terminal faça:
+
+```zsh
+npm install && npm make-url && docker compose up --build
+```
+
 # Sobre 📚
 
 Trabalho sobre API Rest que representará nossa avaliação N3.
