@@ -6,10 +6,21 @@ import dotenv from 'dotenv'
 // Load environment variables from .env file
 dotenv.config({ path: path.join(__dirname, '../../.env') })
 
+const args = process.argv.slice(2)
+
 // Function to construct DATABASE_URL from environment variables
-const constructDatabaseUrl = (): string => {
-    const { DB_USERNAME, DB_PASSWORD, DB_HOST_DOCKER, DB_PORT, DB_NAME, DB_SCHEMA } = process.env
-    return `postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST_DOCKER}:${DB_PORT}/${DB_NAME}?schema=${DB_SCHEMA}`
+const constructDatabaseUrl = (args: string): string => {
+    if (args === 'docker') {
+        const { DB_USERNAME, DB_PASSWORD, DB_HOST_DOCKER, DB_PORT, DB_NAME, DB_SCHEMA } = process.env
+        return `postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST_DOCKER}:${DB_PORT}/${DB_NAME}?schema=${DB_SCHEMA}`
+    }
+
+    else if (args === 'native') {
+        const { DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME, DB_SCHEMA } = process.env
+        return `postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?schema=${DB_SCHEMA}`
+    }
+
+    throw new Error('Please provide a valid argument perhaps you forgot to pass "docker" or "native" as an argument.')
 }
 
 // Function to export DATABASE_URL to .env file
@@ -36,13 +47,21 @@ const exportToEnv = (databaseUrl: string) => {
     fs.writeFileSync(envPath, envContent, { encoding: 'utf-8' })
 }
 
-const makeDatabaseUrl = () => {
-    const databaseUrl = constructDatabaseUrl()
+const makeDatabaseUrl = (args: string) => {
+    const databaseUrl = constructDatabaseUrl(args)
+
+    if (databaseUrl.includes('undefined')) {
+        throw new Error(".env files have non setted attributes, perhaps you forgot to set them? .")
+    }
+
     exportToEnv(databaseUrl)
 }
 
-if (require.main === module) {
-    makeDatabaseUrl()
-}
+//Runs the function if the file is run directly
+if (require.main === module && args.includes('docker') || args.includes('native')) {
+    makeDatabaseUrl(args[0])
+} else (
+    console.error('Please provide a valid argument perhaps you forgot to pass "docker" or "native" as an argument.')
+)
 
 export default makeDatabaseUrl
