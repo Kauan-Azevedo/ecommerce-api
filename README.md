@@ -12,8 +12,10 @@ Requisitos:
 Depois no seu terminal faça:
 
 ```zsh
-npm install && npm make-url && docker compose up --build
+npm install && npm run make-url -- docker && docker compose up --build
 ```
+
+A URL da API deve aparecer no seu terminal quando a execução da aplicação acontecer
 
 ### Como rodar a API nativamente 💻
 
@@ -27,8 +29,10 @@ Requisitos:
 Primeiramente suba seu banco de dados, depois execute os seguintes comandos no seu terminal:
 
 ```zsh
-npm install && npm make-url && npm prisma migrate && npm prisma generate && npm run start:dev 
+npm install && npm run make-url -- native && npm prisma migrate && npm prisma generate && npm run start:dev 
 ```
+
+A URL da API deve aparecer no seu terminal quando a execução da aplicação acontecer
 
 # Sobre 📚
 
