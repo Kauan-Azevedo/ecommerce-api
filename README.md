@@ -15,6 +15,21 @@ Depois no seu terminal faça:
 npm install && npm make-url && docker compose up --build
 ```
 
+### Como rodar a API nativamente 💻
+
+Copie o arquivo de referencia `.env-example` e crie seu proprio `.env`.
+
+Requisitos:
+ - PostgreSQL
+ - Node.js
+ - NPM
+
+Primeiramente suba seu banco de dados, depois execute os seguintes comandos no seu terminal:
+
+```zsh
+npm install && npm make-url && npm prisma migrate && npm prisma generate && npm run start:dev 
+```
+
 # Sobre 📚
 
 Trabalho sobre API Rest que representará nossa avaliação N3.
