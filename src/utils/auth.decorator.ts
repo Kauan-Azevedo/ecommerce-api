@@ -5,6 +5,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 const SECRET_KEY = process.env.SECRET_KEY || "";
+// PROIBIDO ACESSO DE MENINS
 
 export const authenticateJWT = (
   req: any,
@@ -25,7 +26,7 @@ export const authenticateJWT = (
   });
 };
 
-export function Authenticated() {
+export function Authenticated(requiredPermission: string) {
   return function (
     target: Object,
     propertyKey: string | symbol,
@@ -41,11 +42,22 @@ export function Authenticated() {
       const token = req.header("Authorization")?.split(" ")[1];
       if (!token) {
         res.sendStatus(403);
+        return;
       }
 
       try {
-        const user = jwt.verify(token as string, SECRET_KEY);
+        const user = jwt.verify(token as string, SECRET_KEY) as any;
         (req as any).user = user;
+
+        const userPermission: string = user.permission;
+        if (
+          requiredPermission &&
+          !(userPermission === requiredPermission || userPermission === "Admin")
+        ) {
+          res.status(403).json({ message: "Permission denied" });
+          return;
+        }
+
         if (typeof originalMethod === "function") {
           return originalMethod.apply(this, args);
         } else {
@@ -53,6 +65,7 @@ export function Authenticated() {
         }
       } catch (err) {
         res.sendStatus(403);
+        return;
       }
     };
 

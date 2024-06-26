@@ -11,6 +11,13 @@ class AuthService {
   async login(email: string, password: string) {
     const user = await prisma.user.findUnique({
       where: { email },
+      include: {
+        permission: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -18,9 +25,13 @@ class AuthService {
     }
 
     const secretKey = process.env.SECRET_KEY || "";
-    const token = jwt.sign({ id: user.id, email: user.email }, secretKey, {
-      expiresIn: "24h",
-    });
+    const token = jwt.sign(
+      { id: user.id, email: user.email, permission: user.permission.name },
+      secretKey,
+      {
+        expiresIn: "24h",
+      },
+    );
     return { user, token };
   }
 }

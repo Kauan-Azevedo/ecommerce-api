@@ -3,7 +3,7 @@ import { UsersController } from "../controller/user.controller";
 import { UsersService } from "../services/user.service";
 
 const router = express.Router();
-const userService = new UsersService(); // Instanciando o serviço
+const userService = new UsersService();
 const userController = new UsersController(userService);
 
 /**
@@ -12,13 +12,31 @@ const userController = new UsersController(userService);
  *   schemas:
  *     User:
  *       type: object
+ *       required:
+ *         - first_name
+ *         - last_name
+ *         - email
+ *         - password
+ *         - id_permission
  *       properties:
- *         name:
+ *         first_name:
  *           type: string
+ *           example: John
+ *         last_name:
+ *           type: string
+ *           example: Doe
  *         email:
  *           type: string
+ *           example: john.doe@example.com
+ *         phone_number:
+ *           type: string
+ *           example: "123-456-7890"
  *         password:
  *           type: string
+ *           example: password123
+ *         id_permission:
+ *           type: integer
+ *           example: 1
  *   requestBodies:
  *     UserBody:
  *       required: true

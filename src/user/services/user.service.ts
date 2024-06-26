@@ -4,13 +4,14 @@ import bcrypt from "bcrypt";
 
 class UsersService {
   async createUser(user: User) {
-    const { password } = user;
+    const { password, id_permission, id, ...userData } = user;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     return prisma.user.create({
       data: {
-        ...user,
+        ...userData,
         password: hashedPassword,
+        permission: { connect: { id: id_permission } },
       },
     });
   }
