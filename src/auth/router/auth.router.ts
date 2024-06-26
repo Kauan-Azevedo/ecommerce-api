@@ -38,6 +38,7 @@ const authController = new AuthController(authService);
  *  /auth/login:
  *      post:
  *          summary: Faz login de um usuário
+ *          tags: [Auth]
  *          requestBody:
  *              $ref: '#/components/requestBodies/AuthBody'
  *          responses:
