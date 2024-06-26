@@ -6,6 +6,7 @@
   "author": "GreenSpace",
   "license": "MIT",
   "scripts": {
+    "make-url": "ts-node src/utils/make-databaseurl.ts",
     "build": "tsc && tsc-alias",
     "seed": "ts-node prisma/seed.ts",
     "watch": "tsc-watch --onSuccess \"npm run alias\"",
