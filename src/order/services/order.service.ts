@@ -16,8 +16,50 @@ interface OrderItemData {
     quantity: number
 }
 
+interface Product {
+    id: number;
+    price: number;
+    stock: number;
+    name: string;
+    description: string | null;
+    value: number;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date | null;
+}
+
+
 class OrderService {
+    async calculatePrice(orderData: OrderData): Promise<number> {
+        const total = await orderData.orderItems.reduce(async (accumulatorPromise, currentItem) => {
+            const accumulator = await accumulatorPromise;
+            const productData = await prisma.product.findUnique({ where: { id: currentItem.productId } });
+
+            if (!productData) {
+                throw new Error(`Product with id ${currentItem.productId} not found`);
+            }
+
+            const product: Product = productData as unknown as Product;
+
+            console.log(product.name);
+
+            if (product.stock < currentItem.quantity) {
+                throw new Error(`Product with id ${currentItem.productId} has insufficient stock`);
+            }
+
+            return accumulator + (product.value * currentItem.quantity);
+        }, Promise.resolve(0));
+
+
+        return total;
+    }
+
+
     async createOrder(orderData: OrderData): Promise<Order> {
+        const orderTotalValue = await this.calculatePrice(orderData)
+
+        orderData.value = orderTotalValue
+
         return await prisma.order.create({
             data: {
                 paymentMethodId: orderData.paymentMethodId,
