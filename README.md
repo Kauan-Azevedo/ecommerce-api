@@ -1,3 +1,39 @@
+# E-commerce API 💹
+
+### Como rodar a API via Docker 🐳
+
+Copie o arquivo de referencia `.env-example` e crie seu proprio `.env`.
+
+Requisitos:
+ - DockerEngine
+ - Node.js
+ - NPM
+
+Depois no seu terminal faça:
+
+```zsh
+npm install && npm run make-url -- docker && docker compose up --build
+```
+
+A URL da API deve aparecer no seu terminal quando a execução da aplicação acontecer
+
+### Como rodar a API nativamente 💻
+
+Copie o arquivo de referencia `.env-example` e crie seu proprio `.env`.
+
+Requisitos:
+ - PostgreSQL
+ - Node.js
+ - NPM
+
+Primeiramente suba seu banco de dados, depois execute os seguintes comandos no seu terminal:
+
+```zsh
+npm install && npm run make-url -- native && npm prisma migrate && npm prisma generate && npm run start:dev 
+```
+
+A URL da API deve aparecer no seu terminal quando a execução da aplicação acontecer
+
 # Sobre 📚
 
 Trabalho sobre API Rest que representará nossa avaliação N3.
