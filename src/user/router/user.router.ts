@@ -61,7 +61,7 @@ const userController = new UsersController(userService);
  * @swagger
  * /users:
  *   post:
- *     summary: Cria um novo usuário
+ *     summary: Create a new User
  *     tags: [User]
  *     requestBody:
  *       $ref: '#/components/requestBodies/UserBody'
@@ -77,7 +77,7 @@ router.post("/", userController.createUser.bind(userController));
  * @swagger
  * /users/{id}:
  *   get:
- *     summary: Retorna um usuário pelo ID
+ *     summary: Returns user by ID
  *     tags: [User]
  *     parameters:
  *       - in: path
@@ -97,7 +97,7 @@ router.get("/:id", userController.getUserById.bind(userController));
  * @swagger
  * /users:
  *   get:
- *     summary: Retorna a lista de usuários
+ *     summary: Returns all users
  *     tags: [User]
  *     responses:
  *       200:
@@ -115,7 +115,7 @@ router.get("/", userController.getAllUsers.bind(userController));
  * @swagger
  * /users/{id}:
  *   put:
- *     summary: Atualiza um usuário pelo ID
+ *     summary: Update a user by ID
  *     tags: [User]
  *     parameters:
  *       - in: path
@@ -139,7 +139,7 @@ router.put("/:id", userController.updateUser.bind(userController));
  * @swagger
  * /users/{id}:
  *   delete:
- *     summary: Deleta um usuário pelo ID
+ *     summary: Delete a user by ID
  *     tags: [User]
  *     parameters:
  *       - in: path
