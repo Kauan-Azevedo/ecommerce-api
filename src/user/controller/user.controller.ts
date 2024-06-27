@@ -10,7 +10,7 @@ class UsersController {
       const user = await this.usersService.createUser(req.body);
       res.status(200).json(user);
     } catch (error) {
-      res.status(400).json({ message: "Error creating user" });
+      res.status(400).json({ message: `Error creating user\n\n ${error}` });
     }
   }
 
