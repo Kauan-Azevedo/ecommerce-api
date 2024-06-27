@@ -38,7 +38,7 @@ const permissionController = new PermissionController(permissionService);
 
 /**
  * @swagger
- * /permissions:
+ * /permissions/:
  *   post:
  *     summary: Create a new permission
  *     tags: [Permissions]
