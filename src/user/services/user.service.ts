@@ -7,7 +7,7 @@ class UsersService {
     const { password, id_permission, id, ...userData } = user;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    return prisma.user.create({
+    return await prisma.user.create({
       data: {
         ...userData,
         password: hashedPassword,
@@ -17,11 +17,11 @@ class UsersService {
   }
 
   async getUserById(id: number) {
-    return prisma.user.findUnique({ where: { id } });
+    return await prisma.user.findUnique({ where: { id } });
   }
 
   async getAllUsers() {
-    return prisma.user.findMany({
+    return await prisma.user.findMany({
       include: {
         permission: {
           select: {
@@ -33,11 +33,11 @@ class UsersService {
   }
 
   async updateUser(id: number, user: User) {
-    return prisma.user.update({ where: { id }, data: user });
+    return await prisma.user.update({ where: { id }, data: user });
   }
 
   async deleteUser(id: number) {
-    return prisma.user.delete({ where: { id } });
+    return await prisma.user.delete({ where: { id } });
   }
 }
 

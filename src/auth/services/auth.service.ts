@@ -3,12 +3,13 @@ import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-class AuthService {
-  constructor() {
-    // Constructor logic here, if needed
-  }
+interface AuthResponse {
+  user: User & { permission: { name: string } };
+  token: string;
+}
 
-  async login(email: string, password: string) {
+class AuthService {
+  async login(email: string, password: string): Promise<AuthResponse> {
     const user = await prisma.user.findUnique({
       where: { email },
       include: {
@@ -28,10 +29,9 @@ class AuthService {
     const token = jwt.sign(
       { id: user.id, email: user.email, permission: user.permission.name },
       secretKey,
-      {
-        expiresIn: "24h",
-      },
+      { expiresIn: "24h" },
     );
+
     return { user, token };
   }
 }

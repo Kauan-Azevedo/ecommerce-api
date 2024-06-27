@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
+import prismaErrorHandler from "../prisma/middleware/errorHandler";
 
 // Importing Routers
 import usersRouter from "./user/router/user.router";
@@ -30,6 +31,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan("dev"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+app.use(prismaErrorHandler);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////Setup routers/////////////////////////////////////////////

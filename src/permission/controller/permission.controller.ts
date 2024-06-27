@@ -11,7 +11,7 @@ class PermissionController {
       );
       res.status(201).send(permission);
     } catch (error) {
-      res.status(400).send(error);
+      res.status(400).send("Error creating permission");
     }
   }
 
@@ -20,7 +20,7 @@ class PermissionController {
       const permissions = await this.permissionService.getPermissions();
       res.status(200).send(permissions);
     } catch (error) {
-      res.status;
+      res.status(400).send("Error getting permissions");
     }
   }
 
@@ -31,7 +31,7 @@ class PermissionController {
       );
       res.status(200).send(permission);
     } catch (error) {
-      res.status(400).send(error);
+      res.status(400).send("Error getting permission");
     }
   }
 
@@ -43,7 +43,7 @@ class PermissionController {
       );
       res.status(200).send(permission);
     } catch (error) {
-      res.status(400).send(error);
+      res.status(400).send("Error updating permission");
     }
   }
 
@@ -54,7 +54,7 @@ class PermissionController {
       );
       res.status(200).send(permission);
     } catch (error) {
-      res.status(400).send(error);
+      res.status(400).send("Error deleting permission");
     }
   }
 }
