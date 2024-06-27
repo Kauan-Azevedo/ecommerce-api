@@ -77,7 +77,7 @@ router.post("/", userController.createUser.bind(userController));
  * @swagger
  * /users/{id}:
  *   get:
- *     summary: Returns user by ID
+ *     summary: Get a user by ID
  *     tags: [User]
  *     parameters:
  *       - in: path
@@ -97,7 +97,7 @@ router.get("/:id", userController.getUserById.bind(userController));
  * @swagger
  * /users:
  *   get:
- *     summary: Returns all users
+ *     summary: Get all users
  *     tags: [User]
  *     responses:
  *       200:
