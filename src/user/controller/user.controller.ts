@@ -5,7 +5,7 @@ import { Authenticated } from "@/utils/auth.decorator";
 class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Authenticated("Admin")
+  // @Authenticated("Admin")
   async createUser(req: Request, res: Response) {
     const user = await this.usersService.createUser(req.body);
     res.json(user);
