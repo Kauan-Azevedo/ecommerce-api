@@ -82,7 +82,7 @@ model Order {
   paymentStatusId Int
   userId          Int
   description     String?
-  date            DateTime
+  date            DateTime      @default(now())
   value           Float
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @default(now()) @updatedAt
