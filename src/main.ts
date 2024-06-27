@@ -47,7 +47,7 @@ app.use("/products", productRouter);
 
 // Rota inicial
 app.get("/", (req: Request, res: Response) => {
-  res.send("Welcome to Ecommerce API!");
+  res.send("Welcome to Ecommerce API! Go to <strong><a href='/api-docs'>/api-docs</a></strong> to see the documentation");
 });
 
 // Iniciar o servidor
