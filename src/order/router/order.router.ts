@@ -25,10 +25,6 @@ const orderController = new OrderController(orderService)
  *         description:
  *           type: string
  *           example: "Order description"
- *         date:
- *           type: string
- *           format: date
- *           example: "2021-07-01"
  *         value:
  *           type: number
  *           example: 100
@@ -65,7 +61,7 @@ const orderController = new OrderController(orderService)
 
 /**
  * @swagger
- * /create:
+ * /orders/create:
  *   post:
  *     summary: Create a new order
  *     tags: [Order]
@@ -82,7 +78,7 @@ router.post("/create", (req, res) => orderController.createOrder(req, res));
 
 /**
  * @swagger
- * /{id}:
+ * /orders/{id}:
  *   get:
  *     summary: Get an order by ID
  *     tags: [Order]
@@ -104,7 +100,7 @@ router.get("/:id", (req, res) => orderController.getOrderById(req, res));
 
 /**
  * @swagger
- * /{id}:
+ * /orders/{id}:
  *   put:
  *     summary: Update an order by ID
  *     tags: [Order]
@@ -130,7 +126,7 @@ router.put("/:id", (req, res) => orderController.updateOrder(req, res));
 
 /**
  * @swagger
- * /{id}:
+ * /orders/{id}:
  *   delete:
  *     summary: Delete an order by ID
  *     tags: [Order]
