@@ -25,9 +25,6 @@ const orderController = new OrderController(orderService)
  *         description:
  *           type: string
  *           example: "Order description"
- *         value:
- *           type: number
- *           example: 100
  *         orderItems:
  *           type: array
  *           items:
