@@ -41,8 +41,6 @@ class OrderService {
 
             const product: Product = productData as unknown as Product
 
-            console.log(product.name)
-
             if (product.stock < currentItem.quantity) {
                 throw new Error(`Product with id ${currentItem.productId} has insufficient stock`)
             }
