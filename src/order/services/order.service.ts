@@ -28,6 +28,15 @@ interface Product {
     deletedAt: Date | null
 }
 
+interface PaymentMethod {
+    id: number
+    name: string
+    createdAt: Date
+    updatedAt: Date
+    deletedAt: Date | null
+    order?: OrderData[]
+}
+
 
 class OrderService {
     async calculatePrice(orderData: OrderData): Promise<number> {
@@ -52,13 +61,42 @@ class OrderService {
         return total
     }
 
+    async reduceStock(orderData: OrderData): Promise<void> {
+        await orderData.orderItems.reduce(async (accumulatorPromise, currentItem) => {
+            await accumulatorPromise
+            const productData = await prisma.product.findUnique({ where: { id: currentItem.productId } })
+
+            if (!productData) {
+                throw new Error(`Product with id ${currentItem.productId} not found`)
+            }
+
+            const product: Product = productData as unknown as Product
+
+            if (product.stock < currentItem.quantity) {
+                throw new Error(`Product with id ${currentItem.productId} has insufficient stock`)
+            }
+
+            await prisma.product.update({
+                where: { id: currentItem.productId },
+                data: {
+                    stock: product.stock - currentItem.quantity,
+                },
+            })
+        }, Promise.resolve())
+    }
+
+    async paymentMethodById(paymentMethodId: number): Promise<PaymentMethod | null> {
+        return await prisma.paymentMethod.findUnique({
+            where: { id: paymentMethodId },
+        })
+    }
 
     async createOrder(orderData: OrderData): Promise<Order> {
         const orderTotalValue = await this.calculatePrice(orderData)
 
         orderData.value = orderTotalValue
 
-        return await prisma.order.create({
+        const order = await prisma.order.create({
             data: {
                 paymentMethodId: orderData.paymentMethodId,
                 paymentStatusId: orderData.paymentStatusId,
@@ -77,6 +115,9 @@ class OrderService {
                 orderInfos: true,
             },
         })
+
+        this.reduceStock(orderData)
+        return order
     }
 
     async getOrderById(orderId: number): Promise<Order | null> {
@@ -97,6 +138,16 @@ class OrderService {
 
     async updateOrder(orderId: number, orderData: OrderData): Promise<Order> {
         return await prisma.$transaction(async (prisma) => {
+            const paymentMethod = await this.paymentMethodById(orderData.paymentMethodId)
+
+            if (!paymentMethod) {
+                throw new Error('Invalid payment method')
+            }
+
+            if (paymentMethod.name.toLocaleLowerCase() == "paid") {
+                throw new Error('Payment method is paid')
+            }
+
             await prisma.orderInfo.deleteMany({
                 where: { orderId: orderId },
             })
