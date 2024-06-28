@@ -1,4 +1,4 @@
-import { PrismaClient, Order } from '@prisma/client'
+import { PrismaClient, Order, Prisma } from '@prisma/client'
 const prisma = new PrismaClient()
 
 interface OrderData {
@@ -17,41 +17,41 @@ interface OrderItemData {
 }
 
 interface Product {
-    id: number;
-    price: number;
-    stock: number;
-    name: string;
-    description: string | null;
-    value: number;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date | null;
+    id: number
+    price: number
+    stock: number
+    name: string
+    description: string | null
+    value: number
+    createdAt: Date
+    updatedAt: Date
+    deletedAt: Date | null
 }
 
 
 class OrderService {
     async calculatePrice(orderData: OrderData): Promise<number> {
         const total = await orderData.orderItems.reduce(async (accumulatorPromise, currentItem) => {
-            const accumulator = await accumulatorPromise;
-            const productData = await prisma.product.findUnique({ where: { id: currentItem.productId } });
+            const accumulator = await accumulatorPromise
+            const productData = await prisma.product.findUnique({ where: { id: currentItem.productId } })
 
             if (!productData) {
-                throw new Error(`Product with id ${currentItem.productId} not found`);
+                throw new Error(`Product with id ${currentItem.productId} not found`)
             }
 
-            const product: Product = productData as unknown as Product;
+            const product: Product = productData as unknown as Product
 
-            console.log(product.name);
+            console.log(product.name)
 
             if (product.stock < currentItem.quantity) {
-                throw new Error(`Product with id ${currentItem.productId} has insufficient stock`);
+                throw new Error(`Product with id ${currentItem.productId} has insufficient stock`)
             }
 
-            return accumulator + (product.value * currentItem.quantity);
-        }, Promise.resolve(0));
+            return accumulator + (product.value * currentItem.quantity)
+        }, Promise.resolve(0))
 
 
-        return total;
+        return total
     }
 
 
@@ -102,6 +102,8 @@ class OrderService {
             await prisma.orderInfo.deleteMany({
                 where: { orderId: orderId },
             })
+
+            orderData.value = await this.calculatePrice(orderData)
 
             const order = await prisma.order.update({
                 where: { id: orderId },
