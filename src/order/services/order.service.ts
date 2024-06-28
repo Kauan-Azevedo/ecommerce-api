@@ -61,7 +61,7 @@ class OrderService {
         return total
     }
 
-    async reduceStock(orderData: OrderData): Promise<void> {
+    async reduceStock(quantity: number, orderData: OrderData): Promise<void> {
         await orderData.orderItems.reduce(async (accumulatorPromise, currentItem) => {
             await accumulatorPromise
             const productData = await prisma.product.findUnique({ where: { id: currentItem.productId } })
@@ -76,10 +76,13 @@ class OrderService {
                 throw new Error(`Product with id ${currentItem.productId} has insufficient stock`)
             }
 
+            console.log(productData.stock, quantity, product.stock - quantity)
+            const newProductStock = product.stock - quantity
+
             await prisma.product.update({
                 where: { id: currentItem.productId },
                 data: {
-                    stock: product.stock - currentItem.quantity,
+                    stock: newProductStock,
                 },
             })
         }, Promise.resolve())
@@ -89,6 +92,26 @@ class OrderService {
         return await prisma.paymentMethod.findUnique({
             where: { id: paymentMethodId },
         })
+    }
+
+    async returnItemsToStock(quantity: number, orderData: OrderData): Promise<void> {
+        await orderData.orderItems.reduce(async (accumulatorPromise, currentItem) => {
+            await accumulatorPromise
+            const productData = await prisma.product.findUnique({ where: { id: currentItem.productId } })
+
+            if (!productData) {
+                throw new Error(`Product with id ${currentItem.productId} not found`)
+            }
+
+            const product: Product = productData as unknown as Product
+
+            await prisma.product.update({
+                where: { id: currentItem.productId },
+                data: {
+                    stock: product.stock + quantity,
+                },
+            })
+        }, Promise.resolve())
     }
 
     async createOrder(orderData: OrderData): Promise<Order> {
@@ -116,7 +139,10 @@ class OrderService {
             },
         })
 
-        this.reduceStock(orderData)
+        order.orderInfos.forEach(async (item) => {
+            this.reduceStock(item.quantity, orderData)
+        })
+
         return order
     }
 
@@ -144,9 +170,33 @@ class OrderService {
                 throw new Error('Invalid payment method')
             }
 
-            if (paymentMethod.name.toLocaleLowerCase() == "paid") {
+
+
+
+            //this is not working as expected
+            if (paymentMethod.name.toLowerCase() == "paid") {
                 throw new Error('Payment method is paid')
             }
+
+
+
+            orderData.orderItems.forEach(async (item) => {
+                const oldOrderInfo = await prisma.orderInfo.findMany({
+                    where: { orderId: orderId },
+                })
+
+                oldOrderInfo.forEach(async (oldItem) => {
+                    if (item.quantity > oldItem.quantity) {
+                        const quantity = item.quantity - oldItem.quantity
+                        console.log(item.quantity, oldItem.quantity, quantity)
+                        await this.reduceStock(quantity, orderData)
+                    } else {
+                        const quantity = oldItem.quantity - item.quantity
+                        await this.returnItemsToStock(quantity, orderData)
+                    }
+                })
+
+            })
 
             await prisma.orderInfo.deleteMany({
                 where: { orderId: orderId },
