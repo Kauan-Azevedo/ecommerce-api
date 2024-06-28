@@ -1,4 +1,9 @@
-import { PrismaClient, Order, Prisma } from '@prisma/client'
+import { PrismaClient, Order } from '@prisma/client'
+import { ProductController } from '@/product/controller/product.controller'
+import { ProductService } from '@/product/services/product.service'
+
+const productController = new ProductController(new ProductService())
+
 const prisma = new PrismaClient()
 
 interface OrderData {
