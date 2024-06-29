@@ -81,7 +81,6 @@ class OrderService {
                 throw new Error(`Product with id ${currentItem.productId} has insufficient stock`)
             }
 
-            console.log(productData.stock, quantity, product.stock - quantity)
             const newProductStock = product.stock - quantity
 
             await prisma.product.update({
@@ -117,6 +116,30 @@ class OrderService {
                 },
             })
         }, Promise.resolve())
+    }
+
+    async returnAllTheItemsToStock(orderData: Order): Promise<void> {
+        const ordersInfo = await prisma.orderInfo.findMany({
+            where: { orderId: orderData.id },
+        })
+
+        ordersInfo.forEach(async (item) => {
+            await prisma.product.findUnique({
+                where: { id: item.productId },
+            }).then(
+                async (productData) => {
+                    const product: Product = productData as unknown as Product
+
+                    await prisma.product.update({
+                        where: { id: item.productId },
+                        data: {
+                            stock: product.stock + item.quantity,
+                        },
+                    })
+                }
+            )
+        })
+
     }
 
     async createOrder(orderData: OrderData): Promise<Order> {
@@ -236,12 +259,16 @@ class OrderService {
     }
 
     async deleteOrder(orderId: number): Promise<Order> {
-        return await prisma.order.update({
+        const order = await prisma.order.update({
             where: { id: orderId },
             data: {
                 deletedAt: new Date(),
             },
         })
+
+        this.returnAllTheItemsToStock(order)
+
+        return order
     }
 }
 
