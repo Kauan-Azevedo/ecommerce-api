@@ -200,7 +200,6 @@ const prismaErrorHandler = (
         return res.status(403).json({ error: { message: "Prisma Data Platform account is blocked." } });
       case "P6105":
         return res.status(400).json({ error: { message: "Incompatible Prisma version for Prisma Pulse." } });
-
       default:
         return res.status(500).json({ error: { message: "An unexpected error occurred.", code: err.code } });
     }
