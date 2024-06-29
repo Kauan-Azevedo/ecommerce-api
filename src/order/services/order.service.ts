@@ -2,46 +2,11 @@ import { PrismaClient, Order } from '@prisma/client'
 import { ProductController } from '@/product/controller/product.controller'
 import { ProductService } from '@/product/services/product.service'
 
+import { OrderData, PaymentMethod, Product } from "../interfaces/order.interfaces"
+
 const productController = new ProductController(new ProductService())
 
 const prisma = new PrismaClient()
-
-interface OrderData {
-    paymentMethodId: number
-    paymentStatusId: number
-    userId: number
-    description?: string
-    date: Date
-    value: number
-    orderItems: OrderItemData[]
-}
-
-interface OrderItemData {
-    productId: number
-    quantity: number
-}
-
-interface Product {
-    id: number
-    price: number
-    stock: number
-    name: string
-    description: string | null
-    value: number
-    createdAt: Date
-    updatedAt: Date
-    deletedAt: Date | null
-}
-
-interface PaymentMethod {
-    id: number
-    name: string
-    createdAt: Date
-    updatedAt: Date
-    deletedAt: Date | null
-    order?: OrderData[]
-}
-
 
 class OrderService {
     async calculatePrice(orderData: OrderData): Promise<number> {
