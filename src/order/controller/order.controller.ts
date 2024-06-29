@@ -1,6 +1,7 @@
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { OrderService } from '../services/order.service'
-import { Prisma } from '@prisma/client'
+import prismaErrorHandler from '../../../prisma/middleware/errorHandler'
+import { Prisma } from '@prisma/client';
 
 class OrderController {
     constructor(private readonly orderService: OrderService) { }
@@ -10,13 +11,10 @@ class OrderController {
             const orderData = req.body
             const order = await this.orderService.createOrder(orderData)
             res.status(201).json(order)
-        } catch (error) {
-            console.error('Error creating order:', error)
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                res.status(400).json({ error: error.message })
-            } else {
-                res.status(500).json({ error: 'Internal Server Error' })
-            }
+        } catch (error: any) {
+            this.orderErrorHandler(error, req, res, () => {
+                prismaErrorHandler(error, req, res)
+            })
         }
     }
 
@@ -30,8 +28,9 @@ class OrderController {
                 res.status(404).json({ error: 'Order not found' })
             }
         } catch (error) {
-            console.error('Error retrieving order:', error)
-            res.status(500).json({ error: 'Internal Server Error' })
+            this.orderErrorHandler(error, req, res, () => {
+                prismaErrorHandler(error, req, res)
+            })
         }
     }
 
@@ -42,12 +41,9 @@ class OrderController {
             const order = await this.orderService.updateOrder(orderId, orderData)
             res.status(200).json(order)
         } catch (error) {
-            console.error('Error updating order:', error)
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                res.status(400).json({ error: error.message })
-            } else {
-                res.status(500).json({ error: 'Internal Server Error' })
-            }
+            this.orderErrorHandler(error, req, res, () => {
+                prismaErrorHandler(error, req, res)
+            })
         }
     }
 
@@ -57,9 +53,35 @@ class OrderController {
             const order = await this.orderService.deleteOrder(orderId)
             res.status(200).json(order)
         } catch (error) {
-            console.error('Error deleting order:', error)
-            res.status(500).json({ error: 'Internal Server Error' })
+            this.orderErrorHandler(error, req, res, () => {
+                prismaErrorHandler(error, req, res)
+            })
         }
+    }
+
+    orderErrorHandler(error: any, req: Request, res: Response, NextFunction: NextFunction): void {
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.meta) {
+            if (error.meta.field_name == 'Order_paymentMethodId_fkey (index)' || error.meta.field_name == 'Order_paymentStatusId_fkey (index)') {
+                res.status(400).json({ error: 'Invalid payment method or status' })
+                return
+            }
+
+            if (error.meta.field_name == 'Order_userId_fkey (index)') {
+                res.status(400).json({ error: 'Invalid user' })
+                return
+            }
+
+            if (error.meta.cause === "Record to update not found.") {
+                res.status(404).json({ error: 'Order not found' })
+                return
+            }
+        }
+
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            return NextFunction()
+        }
+
+        res.status(400).json({ error: error.message })
     }
 }
 
