@@ -1,10 +1,10 @@
 import { PrismaClient, Order } from '@prisma/client'
-import { ProductController } from '@/product/controller/product.controller'
-import { ProductService } from '@/product/services/product.service'
+// import { ProductController } from '@/product/controller/product.controller'
+// import { ProductService } from '@/product/services/product.service'
 
 import { OrderData, PaymentMethod, Product } from "../interfaces/order.interfaces"
 
-const productController = new ProductController(new ProductService())
+// const productController = new ProductController(new ProductService())
 
 const prisma = new PrismaClient()
 
