@@ -118,6 +118,7 @@ class OrderService {
             data: {
                 paymentMethodId: orderData.paymentMethodId,
                 paymentStatusId: orderData.paymentStatusId,
+                statusid: orderData.statusid,
                 userId: orderData.userId,
                 description: orderData.description,
                 date: orderData.date,
@@ -267,6 +268,7 @@ class OrderService {
                 data: {
                     paymentMethodId: orderData.paymentMethodId,
                     paymentStatusId: orderData.paymentStatusId,
+                    statusid: orderData.statusid,
                     userId: orderData.userId,
                     description: orderData.description,
                     date: orderData.date,

@@ -1,6 +1,7 @@
 export interface OrderData {
     paymentMethodId: number
     paymentStatusId: number
+    statusid: number
     userId: number
     description?: string
     date: Date
