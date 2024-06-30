@@ -65,9 +65,9 @@ class StatusController {
   }
 
   statusErrorHandler(error: any, req: Request, res: Response, NextFunction: NextFunction): void {
+    console.log(error)
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.meta) {
-
-      if (error.meta.cause === "Record to update not found.") {
+      if (error.meta.cause === "Record to update not found." || error.meta.cause === "Record to delete does not exist.") {
         res.status(404).json({ error: 'Status not found' })
         return
       }
