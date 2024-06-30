@@ -78,6 +78,7 @@ model OrderInfo {
 
 model Order {
   id              Int           @id @default(autoincrement())
+  statusid        Int
   paymentMethodId Int
   paymentStatusId Int
   userId          Int
@@ -87,10 +88,21 @@ model Order {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @default(now()) @updatedAt
   deletedAt       DateTime?
+  status          Status        @relation(fields: [statusid], references: [id])
   user            User          @relation(fields: [userId], references: [id])
   paymentStatus   PaymentStatus @relation(fields: [paymentStatusId], references: [id])
   paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
   orderInfos      OrderInfo[]   @relation(name: "OrderToOrderInfo")
 
   @@map("Order")
+}
+
+// OrderStatus like "waiting payment", "payment accepted", "payment refused", "shipped", "delivered"
+model Status {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique @db.VarChar(50)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime? @db.Timestamp
+  Order     Order[]
 }
