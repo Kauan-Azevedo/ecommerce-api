@@ -1,10 +1,6 @@
 import { PrismaClient, Order } from '@prisma/client'
-import { ProductController } from '@/product/controller/product.controller'
-import { ProductService } from '@/product/services/product.service'
 
 import { OrderData, PaymentMethod, Product } from "../interfaces/order.interfaces"
-
-// const productController = new ProductController(new ProductService())
 
 const prisma = new PrismaClient()
 
@@ -143,6 +139,70 @@ class OrderService {
         })
 
         return order
+    }
+
+    async getAllOrders(): Promise<Order[]> {
+        return await prisma.order.findMany({
+            where: { deletedAt: null },
+            include: {
+                orderInfos: {
+                    include: {
+                        product: true,
+                    },
+                },
+                user: true,
+                paymentMethod: true,
+                paymentStatus: true,
+            },
+        })
+    }
+
+    async getOrdersByUserId(userId: number): Promise<Order[]> {
+        return await prisma.order.findMany({
+            where: { userId: userId, deletedAt: null },
+            include: {
+                orderInfos: {
+                    include: {
+                        product: true,
+                    },
+                },
+                user: true,
+                paymentMethod: true,
+                paymentStatus: true,
+            },
+        })
+    }
+
+    async getOrdersByPaymentStatus(paymentStatusId: number): Promise<Order[]> {
+        return await prisma.order.findMany({
+            where: { paymentStatusId: paymentStatusId, deletedAt: null },
+            include: {
+                orderInfos: {
+                    include: {
+                        product: true,
+                    },
+                },
+                user: true,
+                paymentMethod: true,
+                paymentStatus: true,
+            },
+        })
+    }
+
+    async getOrdersByPaymentMethod(paymentMethodId: number): Promise<Order[]> {
+        return await prisma.order.findMany({
+            where: { paymentMethodId: paymentMethodId, deletedAt: null },
+            include: {
+                orderInfos: {
+                    include: {
+                        product: true,
+                    },
+                },
+                user: true,
+                paymentMethod: true,
+                paymentStatus: true,
+            },
+        })
     }
 
     async getOrderById(orderId: number): Promise<Order | null> {

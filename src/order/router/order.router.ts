@@ -71,7 +71,7 @@ const orderController = new OrderController(orderService)
  *       400:
  *         $ref: '#/components/responses/Invalid'
  */
-router.post("/create", (req, res) => orderController.createOrder(req, res));
+router.post("/create", (req, res) => orderController.createOrder(req, res))
 
 /**
  * @swagger
@@ -93,7 +93,100 @@ router.post("/create", (req, res) => orderController.createOrder(req, res));
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-router.get("/:id", (req, res) => orderController.getOrderById(req, res));
+router.get("/:id", (req, res) => orderController.getOrderById(req, res))
+
+/**
+ * @swagger
+ * /orders:
+ *   get:
+ *     summary: Get all orders
+ *     tags: [Order]
+ *     responses:
+ *       200:
+ *         description: The list of orders
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Order'
+ */
+router.get("/", (req, res) => orderController.getAllOrders(req, res))
+
+/**
+ * @swagger
+ * /orders/user/{id}:
+ *   get:
+ *     summary: Get all orders by user ID
+ *     tags: [Order]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The user ID
+ *     responses:
+ *       200:
+ *         description: The list of orders
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Order'
+ */
+router.get("/user/:id", (req, res) => orderController.getOrdersByUserId(req, res))
+
+/**
+ * @swagger
+ * /orders/payment-status/{id}:
+ *   get:
+ *     summary: Get all orders by payment status ID
+ *     tags: [Order]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The payment status ID
+ *     responses:
+ *       200:
+ *         description: The list of orders
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Order'
+ */
+router.get("/payment-status/:id", (req, res) => orderController.getOrdersByPaymentStatus(req, res))
+
+/**
+ * @swagger
+ * /orders/payment-method/{id}:
+ *   get:
+ *     summary: Get all orders by payment method ID
+ *     tags: [Order]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The payment method ID
+ *     responses:
+ *       200:
+ *         description: The list of orders
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Order'
+ */
+router.get("/payment-method/:id", (req, res) => orderController.getOrdersByPaymentMethod(req, res))
 
 /**
  * @swagger
@@ -119,7 +212,7 @@ router.get("/:id", (req, res) => orderController.getOrderById(req, res));
  *       400:
  *         $ref: '#/components/responses/Invalid'
  */
-router.put("/:id", (req, res) => orderController.updateOrder(req, res));
+router.put("/:id", (req, res) => orderController.updateOrder(req, res))
 
 /**
  * @swagger
@@ -140,5 +233,5 @@ router.put("/:id", (req, res) => orderController.updateOrder(req, res));
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-router.delete("/:id", (req, res) => orderController.deleteOrder(req, res));
+router.delete("/:id", (req, res) => orderController.deleteOrder(req, res))
 export default router
