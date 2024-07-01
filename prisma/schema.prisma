@@ -84,7 +84,7 @@ model Order {
   description     String?
   date            DateTime      @default(now())
   value           Float
-  status          Int
+  report          Int
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @default(now()) @updatedAt
   deletedAt       DateTime?
@@ -92,12 +92,12 @@ model Order {
   paymentStatus   PaymentStatus @relation(fields: [paymentStatusId], references: [id])
   paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
   orderInfos      OrderInfo[]   @relation(name: "OrderToOrderInfo")
-  orderStatus     OrderStatus   @relation(fields: [status], references: [id])
+  orderStatus     OrderReport   @relation(fields: [report], references: [id])
 
   @@map("Order")
 }
 
-model OrderStatus {
+model OrderReport {
   id        Int       @id @default(autoincrement())
   name      String    @unique @db.VarChar(50)
   createdAt DateTime  @default(now())
