@@ -205,6 +205,10 @@ const prismaErrorHandler = (
     }
   }
 
+  if (err instanceof Prisma.PrismaClientValidationError) {
+    return res.status(400).json("Invalid payload provided.")
+  }
+
   return res.status(500).json({ error: { message: "An unexpected error occurred." } });
 };
 
