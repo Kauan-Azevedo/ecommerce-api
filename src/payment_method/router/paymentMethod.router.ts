@@ -36,6 +36,13 @@ const paymentMethodController = new PaymentMethodController(paymentMethodService
  *       description: Invalid data
  */
 
+/**
+ * @swagger
+ * tags:
+ *   name: PaymentMethod
+ *   description: Create, read, update, and delete the PaymentMethod
+ */
+
 //Post routes
 
 /**
