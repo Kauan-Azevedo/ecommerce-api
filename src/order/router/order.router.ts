@@ -19,6 +19,9 @@ const orderController = new OrderController(orderService)
  *         paymentStatusId:
  *           type: integer
  *           example: 1
+ *         statusId:
+ *           type: integer
+ *           example: 1
  *         userId:
  *           type: integer
  *           example: 1
@@ -54,6 +57,13 @@ const orderController = new OrderController(orderService)
  *       description: The Order was not found
  *     Invalid:
  *       description: Invalid data
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: Order
+ *   description: Create, read, update, and delete the orders
  */
 
 /**
