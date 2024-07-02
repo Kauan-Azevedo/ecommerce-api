@@ -29,7 +29,7 @@ Requisitos:
 Primeiramente suba seu banco de dados, depois execute os seguintes comandos no seu terminal:
 
 ```zsh
-npm install && npm run make-url -- native && npm npx prisma generate && npx prisma migrate dev && npm run start:dev 
+npm install && npm run make-url -- native && npx prisma migrate dev && npx prisma generate && npm run start:dev 
 ```
 
 A URL da API deve aparecer no seu terminal quando a execução da aplicação acontecer
