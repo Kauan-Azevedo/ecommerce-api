@@ -1,15 +1,20 @@
-import { Prisma } from "@prisma/client";
-import { StatusService } from "../services/status.service";
-import prismaErrorHandler from "prisma/middleware/errorHandler";
-import { Request, Response, NextFunction } from "express";
+import { Prisma } from "@prisma/client"
+import { StatusService } from "../services/status.service"
+import prismaErrorHandler from "prisma/middleware/errorHandler"
+import { Request, Response, NextFunction } from "express"
 
 class StatusController {
   constructor(private readonly statusService: StatusService) { }
 
   async getAll(req: Request, res: Response) {
     try {
-      const data = await this.statusService.getAll();
-      res.json(data);
+      const data = await this.statusService.getAll()
+
+      if (!data) {
+        return res.status(404).json({ error: 'Status not found' })
+      }
+
+      res.json(data)
     } catch (error: any) {
       this.statusErrorHandler(error, req, res, () => {
         prismaErrorHandler(error, req, res)
@@ -19,9 +24,14 @@ class StatusController {
 
   async getById(req: Request, res: Response) {
     try {
-      const id = parseInt(req.params.id);
-      const data = await this.statusService.getById(id);
-      res.json(data);
+      const id = parseInt(req.params.id)
+      const data = await this.statusService.getById(id)
+
+      if (!data) {
+        return res.status(404).json({ error: 'Status not found' })
+      }
+
+      res.json(data)
     } catch (error: any) {
       this.statusErrorHandler(error, req, res, () => {
         prismaErrorHandler(error, req, res)
@@ -31,8 +41,8 @@ class StatusController {
 
   async create(req: Request, res: Response) {
     try {
-      const data = await this.statusService.create(req.body);
-      res.json(data);
+      const data = await this.statusService.create(req.body)
+      res.json(data)
     } catch (error: any) {
       this.statusErrorHandler(error, req, res, () => {
         prismaErrorHandler(error, req, res)
@@ -42,9 +52,14 @@ class StatusController {
 
   async update(req: Request, res: Response) {
     try {
-      const id = parseInt(req.params.id);
-      const data = await this.statusService.update(id, req.body);
-      res.json(data);
+      const id = parseInt(req.params.id)
+      const data = await this.statusService.update(id, req.body)
+
+      if (!data) {
+        return res.status(404).json({ error: 'Status not found' })
+      }
+
+      res.json(data)
     } catch (error: any) {
       this.statusErrorHandler(error, req, res, () => {
         prismaErrorHandler(error, req, res)
@@ -54,9 +69,14 @@ class StatusController {
 
   async delete(req: Request, res: Response) {
     try {
-      const id = parseInt(req.params.id);
-      const data = await this.statusService.delete(id);
-      res.json(data);
+      const id = parseInt(req.params.id)
+      const data = await this.statusService.delete(id)
+
+      if (!data) {
+        return res.status(404).json({ error: 'Status not found' })
+      }
+
+      res.json(data)
     } catch (error: any) {
       this.statusErrorHandler(error, req, res, () => {
         prismaErrorHandler(error, req, res)
@@ -65,7 +85,6 @@ class StatusController {
   }
 
   statusErrorHandler(error: any, req: Request, res: Response, NextFunction: NextFunction): void {
-    console.log(error)
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.meta) {
       if (error.meta.cause === "Record to update not found." || error.meta.cause === "Record to delete does not exist.") {
         res.status(404).json({ error: 'Status not found' })
@@ -73,7 +92,7 @@ class StatusController {
       }
     }
 
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError || error instanceof Prisma.PrismaClientValidationError) {
       return NextFunction()
     }
 
@@ -81,4 +100,4 @@ class StatusController {
   }
 }
 
-export { StatusController };
+export { StatusController }
