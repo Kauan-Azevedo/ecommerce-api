@@ -8,7 +8,7 @@
   "scripts": {
     "make-url": "ts-node src/utils/make-databaseurl.ts",
     "build": "tsc && tsc-alias",
-    "seed": "ts-node prisma/seed.ts",
+    "seed": "ts-node prisma/seeders/make-seed.ts",
     "watch": "tsc-watch --onSuccess \"npm run alias\"",
     "alias": "tsc-alias && npm run start",
     "start": "node ./dist/main.js",
