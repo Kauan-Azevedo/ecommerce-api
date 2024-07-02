@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import { PaymentStatusService } from "../services/paymentStatus.service"
+import prismaErrorHandler from "prisma/middleware/errorHandler"
 
 class PaymentStatusController {
   constructor(private readonly paymentStatusService: PaymentStatusService) { }
@@ -7,15 +8,9 @@ class PaymentStatusController {
   async createPaymentStatus(req: Request, res: Response) {
     try {
       const paymentStatus = await this.paymentStatusService.createPaymentStatus(req.body)
-
-      if (!paymentStatus) {
-        return res.status(409).json({ message: `Payment status with name ${req.body.name} already exists.` })
-      }
-
-      res.json(paymentStatus)
+      return res.json(paymentStatus)
     } catch (error) {
-      console.error(error)
-      res.statusCode = 400
+      return this.paymentStatusErrorHandler(error, req, res, prismaErrorHandler)
     }
   }
 
@@ -25,10 +20,10 @@ class PaymentStatusController {
       if (!paymentStatus) {
         return res.status(404).json({ message: "Payment status not found" })
       }
-      res.json(paymentStatus)
+
+      return res.json(paymentStatus)
     } catch (error) {
-      console.error(error)
-      res.statusCode = 400
+      return this.paymentStatusErrorHandler(error, req, res, prismaErrorHandler)
     }
   }
 
@@ -36,23 +31,22 @@ class PaymentStatusController {
     try {
       const statusId = Number(req.params.id)
       const paymentStatus = await this.paymentStatusService.updatePaymentStatus(statusId, req.body)
+
       if (!paymentStatus) {
         return res.status(404).json({ message: "Payment status not found" })
       }
-      res.json(paymentStatus)
+
+      return res.json(paymentStatus)
     } catch (error) {
-      console.error(error)
-      res.statusCode = 400
+      return this.paymentStatusErrorHandler(error, req, res, prismaErrorHandler)
     }
   }
 
   async getAllPaymentStatuses(req: Request, res: Response) {
     try {
-      const paymentStatuses = await this.paymentStatusService.getAllPaymentStatuses()
-      res.json(paymentStatuses)
+      return res.json(await this.paymentStatusService.getAllPaymentStatuses())
     } catch (error) {
-      console.error(error)
-      res.statusCode = 400
+      return this.paymentStatusErrorHandler(error, req, res, prismaErrorHandler)
     }
   }
 
@@ -65,11 +59,15 @@ class PaymentStatusController {
         return res.status(404).json({ message: "Payment status not found" })
       }
 
-      res.json({ message: "Payment status deleted successfully" })
+      return res.json(deleteResult)
     } catch (error) {
-      console.error(error)
-      res.statusCode = 400
+      return this.paymentStatusErrorHandler(error, req, res, prismaErrorHandler)
     }
+  }
+
+  paymentStatusErrorHandler(error: any, req: Request, res: Response, next: Function) {
+    console.log(error)
+    next(error, req, res)
   }
 }
 

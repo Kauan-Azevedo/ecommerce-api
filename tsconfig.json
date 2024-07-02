@@ -9,9 +9,17 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     }
   },
-  "include": ["src/**/*.ts", "prisma/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*.ts",
+    "prisma/**/*.ts",
+    "prisma/**/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

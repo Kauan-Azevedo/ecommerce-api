@@ -36,6 +36,12 @@ const paymentStatusController = new PaymentStatusController(paymentStatusService
  *       description: Invalid data
  */
 
+/**
+ * @swagger
+ * tags:
+ *   name: PaymentStatus
+ *   description: Create, read, update, and delete the PaymentStatus
+ */
 
 //Post routes
 /**

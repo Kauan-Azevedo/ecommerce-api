@@ -1,22 +1,14 @@
 import { Request, Response, NextFunction } from 'express'
 import { OrderService } from '../services/order.service'
 import prismaErrorHandler from '../../../prisma/middleware/errorHandler'
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client'
 
 class OrderController {
     constructor(private readonly orderService: OrderService) { }
 
-    async createOrder(req: Request, res: Response): Promise<void> {
-        try {
-            const orderData = req.body
-            const order = await this.orderService.createOrder(orderData)
-            res.status(201).json(order)
-        } catch (error: any) {
-            this.orderErrorHandler(error, req, res, () => {
-                prismaErrorHandler(error, req, res)
-            })
-        }
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////Getters//////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////
 
     async getOrderById(req: Request, res: Response): Promise<void> {
         try {
@@ -28,6 +20,69 @@ class OrderController {
                 res.status(404).json({ error: 'Order not found' })
             }
         } catch (error) {
+            this.orderErrorHandler(error, req, res, () => {
+                prismaErrorHandler(error, req, res)
+            })
+        }
+    }
+
+    async getAllOrders(req: Request, res: Response): Promise<void> {
+        try {
+            const orders = await this.orderService.getAllOrders()
+            res.status(200).json(orders)
+        } catch (error) {
+            this.orderErrorHandler(error, req, res, () => {
+                prismaErrorHandler(error, req, res)
+            })
+        }
+    }
+
+    async getOrdersByUserId(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = parseInt(req.params.id)
+            const orders = await this.orderService.getOrdersByUserId(userId)
+            res.status(200).json(orders)
+        } catch (error) {
+            this.orderErrorHandler(error, req, res, () => {
+                prismaErrorHandler(error, req, res)
+            })
+        }
+    }
+
+    async getOrdersByPaymentStatus(req: Request, res: Response): Promise<void> {
+        try {
+            const paymentStatusId = parseInt(req.params.id)
+            const orders = await this.orderService.getOrdersByPaymentStatus(paymentStatusId)
+            res.status(200).json(orders)
+        } catch (error) {
+            this.orderErrorHandler(error, req, res, () => {
+                prismaErrorHandler(error, req, res)
+            })
+        }
+    }
+
+    async getOrdersByPaymentMethod(req: Request, res: Response): Promise<void> {
+        try {
+            const paymentMethodId = parseInt(req.params.id)
+            const orders = await this.orderService.getOrdersByPaymentMethod(paymentMethodId)
+            res.status(200).json(orders)
+        } catch (error) {
+            this.orderErrorHandler(error, req, res, () => {
+                prismaErrorHandler(error, req, res)
+            })
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    ////////////////////////END OF THE GETTERS////////////////////////
+    /////////////////////////////////////////////////////////////////////////
+
+    async createOrder(req: Request, res: Response): Promise<void> {
+        try {
+            const orderData = req.body
+            const order = await this.orderService.createOrder(orderData)
+            res.status(201).json(order)
+        } catch (error: any) {
             this.orderErrorHandler(error, req, res, () => {
                 prismaErrorHandler(error, req, res)
             })

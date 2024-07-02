@@ -1,10 +1,6 @@
 import { PrismaClient, Order } from '@prisma/client'
-import { ProductController } from '@/product/controller/product.controller'
-import { ProductService } from '@/product/services/product.service'
 
 import { OrderData, PaymentMethod, Product } from "../interfaces/order.interfaces"
-
-const productController = new ProductController(new ProductService())
 
 const prisma = new PrismaClient()
 
@@ -63,6 +59,12 @@ class OrderService {
         })
     }
 
+    async paymentStatusById(paymentStatusId: number): Promise<PaymentMethod | null> {
+        return await prisma.paymentMethod.findUnique({
+            where: { id: paymentStatusId },
+        })
+    }
+
     async returnItemsToStock(quantity: number, orderData: OrderData): Promise<void> {
         await orderData.orderItems.reduce(async (accumulatorPromise, currentItem) => {
             await accumulatorPromise
@@ -116,6 +118,7 @@ class OrderService {
             data: {
                 paymentMethodId: orderData.paymentMethodId,
                 paymentStatusId: orderData.paymentStatusId,
+                statusid: orderData.statusid,
                 userId: orderData.userId,
                 description: orderData.description,
                 date: orderData.date,
@@ -139,6 +142,70 @@ class OrderService {
         return order
     }
 
+    async getAllOrders(): Promise<Order[]> {
+        return await prisma.order.findMany({
+            where: { deletedAt: null },
+            include: {
+                orderInfos: {
+                    include: {
+                        product: true,
+                    },
+                },
+                user: true,
+                paymentMethod: true,
+                paymentStatus: true,
+            },
+        })
+    }
+
+    async getOrdersByUserId(userId: number): Promise<Order[]> {
+        return await prisma.order.findMany({
+            where: { userId: userId, deletedAt: null },
+            include: {
+                orderInfos: {
+                    include: {
+                        product: true,
+                    },
+                },
+                user: true,
+                paymentMethod: true,
+                paymentStatus: true,
+            },
+        })
+    }
+
+    async getOrdersByPaymentStatus(paymentStatusId: number): Promise<Order[]> {
+        return await prisma.order.findMany({
+            where: { paymentStatusId: paymentStatusId, deletedAt: null },
+            include: {
+                orderInfos: {
+                    include: {
+                        product: true,
+                    },
+                },
+                user: true,
+                paymentMethod: true,
+                paymentStatus: true,
+            },
+        })
+    }
+
+    async getOrdersByPaymentMethod(paymentMethodId: number): Promise<Order[]> {
+        return await prisma.order.findMany({
+            where: { paymentMethodId: paymentMethodId, deletedAt: null },
+            include: {
+                orderInfos: {
+                    include: {
+                        product: true,
+                    },
+                },
+                user: true,
+                paymentMethod: true,
+                paymentStatus: true,
+            },
+        })
+    }
+
     async getOrderById(orderId: number): Promise<Order | null> {
         return await prisma.order.findUnique({
             where: { id: orderId },
@@ -158,20 +225,19 @@ class OrderService {
     async updateOrder(orderId: number, orderData: OrderData): Promise<Order> {
         return await prisma.$transaction(async (prisma) => {
             const paymentMethod = await this.paymentMethodById(orderData.paymentMethodId)
+            const paymentStatus = await this.paymentStatusById(orderData.paymentStatusId)
 
             if (!paymentMethod) {
                 throw new Error('Invalid payment method')
             }
 
-
-
-
-            //this is not working as expected
-            if (paymentMethod.name.toLowerCase() == "paid") {
-                throw new Error('Payment method is paid')
+            if (!paymentStatus) {
+                throw new Error('Invalid payment status')
             }
 
-
+            // if (paymentStatus.name === 'paid') {
+            //     throw new Error('You cannot change the payment status to paid')
+            // }
 
             orderData.orderItems.forEach(async (item) => {
                 const oldOrderInfo = await prisma.orderInfo.findMany({
@@ -202,6 +268,7 @@ class OrderService {
                 data: {
                     paymentMethodId: orderData.paymentMethodId,
                     paymentStatusId: orderData.paymentStatusId,
+                    statusid: orderData.statusid,
                     userId: orderData.userId,
                     description: orderData.description,
                     date: orderData.date,

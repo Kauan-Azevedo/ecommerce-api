@@ -1,5 +1,7 @@
 import { Request, Response } from "express"
 import { PaymentMethodService } from "../services/paymentMethod.service"
+import prismaErrorHandler from "prisma/middleware/errorHandler"
+import { Prisma } from "@prisma/client"
 
 export class PaymentMethodController {
     constructor(private readonly paymentMethodService: PaymentMethodService) { }
@@ -12,23 +14,24 @@ export class PaymentMethodController {
                 return res.status(409).json({ message: `Payment method with name ${req.body.name} already exists.` })
             }
 
-            res.json(paymentMethod)
+            return res.json(paymentMethod)
         } catch (error) {
-            console.error(error)
-            res.statusCode = 400
+            console.log(error)
+            return this.PaymentMethodErrorHandler(error, req, res, prismaErrorHandler)
         }
     }
 
     async getPaymentMethodById(req: Request, res: Response) {
         try {
             const paymentMethod = await this.paymentMethodService.getPaymentMethodById(Number(req.params.id))
+
             if (!paymentMethod) {
                 return res.status(404).json({ message: "Payment method not found" })
             }
+
             res.json(paymentMethod)
         } catch (error) {
-            console.error(error)
-            res.statusCode = 400
+            return this.PaymentMethodErrorHandler(error, req, res, prismaErrorHandler)
         }
     }
 
@@ -39,10 +42,9 @@ export class PaymentMethodController {
             if (!paymentMethod) {
                 return res.status(404).json({ message: "Payment method not found" })
             }
-            res.json(paymentMethod)
+            return res.json(paymentMethod)
         } catch (error) {
-            console.error(error)
-            res.statusCode = 400
+            return this.PaymentMethodErrorHandler(error, req, res, prismaErrorHandler)
         }
     }
 
@@ -51,8 +53,7 @@ export class PaymentMethodController {
             const paymentMethods = await this.paymentMethodService.getAllPaymentMethods()
             res.json(paymentMethods)
         } catch (error) {
-            console.error(error)
-            res.statusCode = 400
+            return this.PaymentMethodErrorHandler(error, req, res, prismaErrorHandler)
         }
     }
 
@@ -60,13 +61,32 @@ export class PaymentMethodController {
         try {
             const methodId = Number(req.params.id)
             const paymentMethod = await this.paymentMethodService.deletePaymentMethod(methodId)
+
             if (!paymentMethod) {
                 return res.status(404).json({ message: "Payment method not found" })
             }
-            res.json(paymentMethod)
+
+            return res.json(paymentMethod)
         } catch (error) {
-            console.error(error)
-            res.statusCode = 400
+            return this.PaymentMethodErrorHandler(error, req, res, prismaErrorHandler)
         }
+    }
+
+    PaymentMethodErrorHandler(error: any, req: Request, res: Response, next: Function) {
+        if (error instanceof Prisma.PrismaClientValidationError) {
+            error as Prisma.PrismaClientValidationError
+            return res.status(400).json("Invalid payload provided.")
+        }
+
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            error as Prisma.PrismaClientKnownRequestError
+
+            if (error.code === 'P2025') {
+                return res.status(404).json({ message: "Payment method not found" })
+            }
+        }
+
+        console.log(error)
+        return next(error, req, res)
     }
 }
