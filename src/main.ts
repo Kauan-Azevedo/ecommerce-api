@@ -15,13 +15,14 @@ import permissionRouter from "./permission/router/permission.router";
 import orderRouter from "./order/router/order.router";
 import productRouter from "./product/router/product.router";
 import statusRouter from "./status/router/status.router";
+import reportRouter from "./report/router/report.router";
 
 // Importing Swagger Options
 import { options } from "./utils/swagger-options";
 
 const specs = swaggerJsdoc(options);
 const app = express();
-const port = 3001;
+const port = 3000;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////Config middlewares and app stuff////////////////////////////////
@@ -46,6 +47,7 @@ app.use("/permissions", permissionRouter);
 app.use("/orders", orderRouter);
 app.use("/products", productRouter);
 app.use("/status", statusRouter);
+app.use("/report", reportRouter);
 
 // Rota inicial
 app.get("/", (req: Request, res: Response) => {
