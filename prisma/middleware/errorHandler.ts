@@ -206,7 +206,8 @@ const prismaErrorHandler = (
   }
 
   if (err instanceof Prisma.PrismaClientValidationError) {
-    return res.status(400).json({ error: 'Status not found' })
+    err as Prisma.PrismaClientValidationError
+    return res.status(400).json({ error: "invalid payload, check your json" })
   }
 
   return res.status(500).json({ error: { message: "An unexpected error occurred." } });

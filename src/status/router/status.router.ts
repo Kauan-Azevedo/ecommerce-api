@@ -1,11 +1,10 @@
-import express from "express"
-import { StatusController } from "../controller/status.controller"
-import { StatusService } from "../services/status.service"
+import express from "express";
+import { StatusController } from "../controller/status.controller";
+import { StatusService } from "../services/status.service";
 
-const router = express.Router()
-const statusService = new StatusService() // Instanciando o serviço
-const statusController = new StatusController(statusService)
-
+const router = express.Router();
+const statusService = new StatusService(); // Instanciando o serviço
+const statusController = new StatusController(statusService);
 
 /**
  * @swagger
@@ -61,7 +60,7 @@ const statusController = new StatusController(statusService)
  *               items:
  *                 $ref: '#/components/schemas/Status'
  */
-router.get("/", (req, res) => statusController.getAll(req, res))
+router.get("/", (req, res) => statusController.getAll(req, res));
 
 /**
  * @swagger
@@ -86,7 +85,7 @@ router.get("/", (req, res) => statusController.getAll(req, res))
  *       404:
  *         description: The status was not found
  */
-router.get("/:id", (req, res) => statusController.getById(req, res))
+router.get("/:id", (req, res) => statusController.getById(req, res));
 
 /**
  * @swagger
@@ -110,7 +109,7 @@ router.get("/:id", (req, res) => statusController.getById(req, res))
  *       500:
  *         description: Some server error
  */
-router.post("/", (req, res) => statusController.create(req, res))
+router.post("/", (req, res) => statusController.create(req, res));
 
 /**
  * @swagger
@@ -143,7 +142,7 @@ router.post("/", (req, res) => statusController.create(req, res))
  *       500:
  *         description: Some error happened
  */
-router.put("/:id", (req, res) => statusController.update(req, res))
+router.put("/:id", (req, res) => statusController.update(req, res));
 
 /**
  * @swagger
@@ -164,6 +163,6 @@ router.put("/:id", (req, res) => statusController.update(req, res))
  *       404:
  *         description: The status was not found
  */
-router.delete("/:id", (req, res) => statusController.delete(req, res))
+router.delete("/:id", (req, res) => statusController.delete(req, res));
 
-export default router
+export default router;

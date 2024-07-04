@@ -1,41 +1,40 @@
-import { prisma } from "@/db/prisma.service"
+import { prisma } from "@/db/prisma.service";
 
 class StatusService {
-
   async getAll() {
-    return await prisma.status.findMany()
+    return await prisma.status.findMany();
   }
 
   async getById(id: number) {
     return await prisma.status.findUnique({
       where: {
-        id: id
-      }
-    })
+        id: id,
+      },
+    });
   }
 
   async create(data: any) {
     return await prisma.status.create({
-      data: data
-    })
+      data: data,
+    });
   }
 
   async update(id: number, data: any) {
     return await prisma.status.update({
       where: {
-        id: id
+        id: id,
       },
-      data: data
-    })
+      data: data,
+    });
   }
 
   async delete(id: number) {
     return await prisma.status.delete({
       where: {
-        id: id
-      }
-    })
+        id: id,
+      },
+    });
   }
 }
 
-export { StatusService }
+export { StatusService };

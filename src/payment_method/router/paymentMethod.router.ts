@@ -1,10 +1,12 @@
-import express from "express"
-import { PaymentMethodService } from "../services/paymentMethod.service"
-import { PaymentMethodController } from "../controller/paymentMethod.controller"
+import express from "express";
+import { PaymentMethodService } from "../services/paymentMethod.service";
+import { PaymentMethodController } from "../controller/paymentMethod.controller";
 
-const router = express.Router()
-const paymentMethodService = new PaymentMethodService()
-const paymentMethodController = new PaymentMethodController(paymentMethodService)
+const router = express.Router();
+const paymentMethodService = new PaymentMethodService();
+const paymentMethodController = new PaymentMethodController(
+  paymentMethodService,
+);
 
 /**
  * @swagger
@@ -59,7 +61,9 @@ const paymentMethodController = new PaymentMethodController(paymentMethodService
  *       400:
  *         $ref: '#/components/responses/Invalid'
  */
-router.post("/create", (req, res) => paymentMethodController.createPaymentMethod(req, res))
+router.post("/create", (req, res) =>
+  paymentMethodController.createPaymentMethod(req, res),
+);
 
 //Get routes
 
@@ -79,7 +83,9 @@ router.post("/create", (req, res) => paymentMethodController.createPaymentMethod
  *               items:
  *                 $ref: '#/components/schemas/PaymentMethod'
  */
-router.get("/", (req, res) => paymentMethodController.getAllPaymentMethods(req, res))
+router.get("/", (req, res) =>
+  paymentMethodController.getAllPaymentMethods(req, res),
+);
 
 /**
  * @swagger
@@ -105,7 +111,9 @@ router.get("/", (req, res) => paymentMethodController.getAllPaymentMethods(req, 
  *         $ref: '#/components/responses/NotFound'
  */
 
-router.get("/:id", (req, res) => paymentMethodController.getPaymentMethodById(req, res))
+router.get("/:id", (req, res) =>
+  paymentMethodController.getPaymentMethodById(req, res),
+);
 
 //Put routes
 
@@ -135,7 +143,9 @@ router.get("/:id", (req, res) => paymentMethodController.getPaymentMethodById(re
  *         $ref: '#/components/responses/NotFound'
  */
 
-router.put("/:id", (req, res) => paymentMethodController.updatePaymentMethod(req, res))
+router.put("/:id", (req, res) =>
+  paymentMethodController.updatePaymentMethod(req, res),
+);
 
 //Delete routes
 
@@ -163,6 +173,8 @@ router.put("/:id", (req, res) => paymentMethodController.updatePaymentMethod(req
  *         $ref: '#/components/responses/NotFound'
  */
 
-router.delete("/:id", (req, res) => paymentMethodController.deletePaymentMethod(req, res))
+router.delete("/:id", (req, res) =>
+  paymentMethodController.deletePaymentMethod(req, res),
+);
 
-export default router
+export default router;
