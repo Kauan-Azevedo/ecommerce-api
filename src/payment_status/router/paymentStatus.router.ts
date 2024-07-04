@@ -1,10 +1,12 @@
-import express from "express"
-import { PaymentStatusController } from "../controller/paymentStatus.controller"
-import { PaymentStatusService } from "../services/paymentStatus.service"
+import express from "express";
+import { PaymentStatusController } from "../controller/paymentStatus.controller";
+import { PaymentStatusService } from "../services/paymentStatus.service";
 
-const router = express.Router()
-const paymentStatusService = new PaymentStatusService()
-const paymentStatusController = new PaymentStatusController(paymentStatusService)
+const router = express.Router();
+const paymentStatusService = new PaymentStatusService();
+const paymentStatusController = new PaymentStatusController(
+  paymentStatusService,
+);
 
 /**
  * @swagger
@@ -58,7 +60,9 @@ const paymentStatusController = new PaymentStatusController(paymentStatusService
  *       400:
  *         $ref: '#/components/responses/Invalid'
  */
-router.post("/create", (req, res) => paymentStatusController.createPaymentStatus(req, res))
+router.post("/create", (req, res) =>
+  paymentStatusController.createPaymentStatus(req, res),
+);
 
 //Get routes
 /**
@@ -77,7 +81,9 @@ router.post("/create", (req, res) => paymentStatusController.createPaymentStatus
  *               items:
  *                 $ref: '#/components/schemas/PaymentStatus'
  */
-router.get("/", (req, res) => paymentStatusController.getAllPaymentStatuses(req, res))
+router.get("/", (req, res) =>
+  paymentStatusController.getAllPaymentStatuses(req, res),
+);
 
 /**
  * @swagger
@@ -98,7 +104,9 @@ router.get("/", (req, res) => paymentStatusController.getAllPaymentStatuses(req,
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-router.get("/:id", (req, res) => paymentStatusController.getPaymentStatusById(req, res))
+router.get("/:id", (req, res) =>
+  paymentStatusController.getPaymentStatusById(req, res),
+);
 
 //Put routes
 /**
@@ -124,7 +132,9 @@ router.get("/:id", (req, res) => paymentStatusController.getPaymentStatusById(re
  *       400:
  *         $ref: '#/components/responses/Invalid'
  */
-router.put("/:id", (req, res) => paymentStatusController.updatePaymentStatus(req, res))
+router.put("/:id", (req, res) =>
+  paymentStatusController.updatePaymentStatus(req, res),
+);
 
 //Delete routes
 /**
@@ -146,6 +156,8 @@ router.put("/:id", (req, res) => paymentStatusController.updatePaymentStatus(req
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-router.delete("/:id", (req, res) => paymentStatusController.deletePaymentStatus(req, res))
+router.delete("/:id", (req, res) =>
+  paymentStatusController.deletePaymentStatus(req, res),
+);
 
-export default router
+export default router;

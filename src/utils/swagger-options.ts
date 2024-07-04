@@ -1,11 +1,11 @@
 export const options = {
-    definition: {
-        openapi: "3.0.0",
-        info: {
-            title: "E-commerce API",
-            version: "1.0.0",
-            description:
-                "Esta aplicação é um projeto de backend para um sistema de e-commerce, \
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "E-commerce API",
+      version: "1.0.0",
+      description:
+        "Esta aplicação é um projeto de backend para um sistema de e-commerce, \
         desenvolvido como parte de uma avaliação (N3) para um cenário fictício onde os desenvo\
         lvedores trabalham para uma startup. \n\nO objetivo é implementar uma API Rest que atenda \
         aos requisitos fornecidos pelo cliente, para posterior implantação no servidor do cliente. O \
@@ -25,21 +25,21 @@ export const options = {
         entre os integrantes da equipe é detalhada, com responsabilidades específicas atribuídas a cada membro, \
         incluindo a implementação de modelos e endpoints específicos, desenvolvimento de testes unitários, e \
         supervisão geral dos endpoints.",
-        },
-        components: {
-            securitySchemes: {
-                BearerAuth: {
-                    type: "http",
-                    scheme: "bearer",
-                    bearerFormat: "JWT",
-                },
-            },
-        },
-        security: [
-            {
-                BearerAuth: [],
-            },
-        ],
     },
-    apis: ["./src/**/*.router.ts"],
-}
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+    security: [
+      {
+        BearerAuth: [],
+      },
+    ],
+  },
+  apis: ["./src/**/*.router.ts"],
+};

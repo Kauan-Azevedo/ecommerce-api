@@ -1,10 +1,10 @@
-import express from "express"
-import { OrderService } from "../services/order.service"
-import { OrderController } from "../controller/order.controller"
+import express from "express";
+import { OrderService } from "../services/order.service";
+import { OrderController } from "../controller/order.controller";
 
-const router = express.Router()
-const orderService = new OrderService()
-const orderController = new OrderController(orderService)
+const router = express.Router();
+const orderService = new OrderService();
+const orderController = new OrderController(orderService);
 
 /**
  * @swagger
@@ -81,7 +81,7 @@ const orderController = new OrderController(orderService)
  *       400:
  *         $ref: '#/components/responses/Invalid'
  */
-router.post("/create", (req, res) => orderController.createOrder(req, res))
+router.post("/create", (req, res) => orderController.createOrder(req, res));
 
 /**
  * @swagger
@@ -103,7 +103,7 @@ router.post("/create", (req, res) => orderController.createOrder(req, res))
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-router.get("/:id", (req, res) => orderController.getOrderById(req, res))
+router.get("/:id", (req, res) => orderController.getOrderById(req, res));
 
 /**
  * @swagger
@@ -121,7 +121,7 @@ router.get("/:id", (req, res) => orderController.getOrderById(req, res))
  *               items:
  *                 $ref: '#/components/schemas/Order'
  */
-router.get("/", (req, res) => orderController.getAllOrders(req, res))
+router.get("/", (req, res) => orderController.getAllOrders(req, res));
 
 /**
  * @swagger
@@ -146,7 +146,9 @@ router.get("/", (req, res) => orderController.getAllOrders(req, res))
  *               items:
  *                 $ref: '#/components/schemas/Order'
  */
-router.get("/user/:id", (req, res) => orderController.getOrdersByUserId(req, res))
+router.get("/user/:id", (req, res) =>
+  orderController.getOrdersByUserId(req, res),
+);
 
 /**
  * @swagger
@@ -171,7 +173,9 @@ router.get("/user/:id", (req, res) => orderController.getOrdersByUserId(req, res
  *               items:
  *                 $ref: '#/components/schemas/Order'
  */
-router.get("/payment-status/:id", (req, res) => orderController.getOrdersByPaymentStatus(req, res))
+router.get("/payment-status/:id", (req, res) =>
+  orderController.getOrdersByPaymentStatus(req, res),
+);
 
 /**
  * @swagger
@@ -196,7 +200,9 @@ router.get("/payment-status/:id", (req, res) => orderController.getOrdersByPayme
  *               items:
  *                 $ref: '#/components/schemas/Order'
  */
-router.get("/payment-method/:id", (req, res) => orderController.getOrdersByPaymentMethod(req, res))
+router.get("/payment-method/:id", (req, res) =>
+  orderController.getOrdersByPaymentMethod(req, res),
+);
 
 /**
  * @swagger
@@ -222,7 +228,7 @@ router.get("/payment-method/:id", (req, res) => orderController.getOrdersByPayme
  *       400:
  *         $ref: '#/components/responses/Invalid'
  */
-router.put("/:id", (req, res) => orderController.updateOrder(req, res))
+router.put("/:id", (req, res) => orderController.updateOrder(req, res));
 
 /**
  * @swagger
@@ -243,5 +249,5 @@ router.put("/:id", (req, res) => orderController.updateOrder(req, res))
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-router.delete("/:id", (req, res) => orderController.deleteOrder(req, res))
-export default router
+router.delete("/:id", (req, res) => orderController.deleteOrder(req, res));
+export default router;
