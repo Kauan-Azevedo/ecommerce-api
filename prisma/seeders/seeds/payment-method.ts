@@ -8,7 +8,7 @@ export async function seedPaymentMethods() {
         paymentMethodsFromEnv = ["Credit Card", "Debit Card", "Pix", "PayPal"]
     }
 
-    paymentMethodsFromEnv.forEach(async (paymentMethod) => {
+    for (const paymentMethod of paymentMethodsFromEnv) {
         await createPaymentMethod(paymentMethod)
-    })
+    }
 }
