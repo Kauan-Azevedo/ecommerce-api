@@ -26,7 +26,7 @@ export const authenticateJWT = (
   });
 };
 
-export function Authenticated(requiredPermission: string) {
+export function Authenticated(allowedPermissions: string[]) {
   return function (
     target: Object,
     propertyKey: string | symbol,
@@ -50,9 +50,10 @@ export function Authenticated(requiredPermission: string) {
         (req as any).user = user;
 
         const userPermission: string = user.permission;
+
         if (
-          requiredPermission &&
-          !(userPermission === requiredPermission || userPermission === "Admin")
+          allowedPermissions.length > 0 &&
+          !allowedPermissions.includes(userPermission)
         ) {
           res.status(403).json({ message: "Permission denied" });
           return;
