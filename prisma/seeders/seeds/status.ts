@@ -8,7 +8,7 @@ export async function seedStatus() {
         statusesFromEnv = ["Active", "Inactive"]
     }
 
-    statusesFromEnv.forEach(async (status) => {
+    for (const status of statusesFromEnv) {
         await createStatus(status)
-    })
+    }
 }

@@ -34,6 +34,12 @@ npm install && npm run make-url -- native && npx prisma migrate dev && npx prism
 
 A URL da API deve aparecer no seu terminal quando a execução da aplicação acontecer
 
+### SEED no DB 🌱
+
+```zsh
+npm run seed
+```
+
 # Sobre 📚
 
 Trabalho sobre API Rest que representará nossa avaliação N3.

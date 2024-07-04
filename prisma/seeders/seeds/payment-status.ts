@@ -8,7 +8,7 @@ export async function seedPaymentStatus() {
         paymentStatusFromEnv = ["Paid", "Refunded", "Cancelled", "Failed", "Waiting Payment"]
     }
 
-    paymentStatusFromEnv.forEach(async (paymentStatus) => {
+    for (const paymentStatus of paymentStatusFromEnv) {
         await createPaymentStatus(paymentStatus)
-    })
+    }
 }
