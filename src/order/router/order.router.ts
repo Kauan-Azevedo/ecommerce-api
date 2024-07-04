@@ -19,7 +19,7 @@ const orderController = new OrderController(orderService)
  *         paymentStatusId:
  *           type: integer
  *           example: 1
- *         statusId:
+ *         statusid:
  *           type: integer
  *           example: 1
  *         userId:
