@@ -13,12 +13,12 @@ class UsersController {
       res.status(200).json(user);
     } catch (error) {
       this.userErrorHandler(error, req, res, () => {
-        prismaErrorHandler(error, req, res); // Chame o handler de erros do Prisma
+        prismaErrorHandler(error, req, res);
       });
     }
   }
 
-  @Authenticated("Admin")
+  @Authenticated(["Admin"])
   async getUserById(req: Request, res: Response): Promise<void> {
     try {
       const userId = Number(req.params.id);
@@ -35,7 +35,7 @@ class UsersController {
     }
   }
 
-  @Authenticated("Admin")
+  @Authenticated(["Admin"])
   async updateUser(req: Request, res: Response): Promise<void> {
     try {
       const userId = Number(req.params.id);
@@ -48,7 +48,7 @@ class UsersController {
     }
   }
 
-  @Authenticated("Default")
+  @Authenticated(["Admin", "Default"])
   async getAllUsers(req: Request, res: Response): Promise<void> {
     try {
       const users = await this.usersService.getAllUsers();
@@ -60,7 +60,7 @@ class UsersController {
     }
   }
 
-  @Authenticated("Admin")
+  @Authenticated(["Admin"])
   async deleteUser(req: Request, res: Response): Promise<void> {
     try {
       const userId = Number(req.params.id);
