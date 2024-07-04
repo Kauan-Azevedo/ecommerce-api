@@ -8,10 +8,11 @@
   "scripts": {
     "make-url": "ts-node src/utils/make-databaseurl.ts",
     "build": "tsc && tsc-alias",
+    "vercel-build": "prisma generate && prisma migrate deploy && npm run build",
     "seed": "ts-node prisma/seeders/make-seed.ts",
     "watch": "tsc-watch --onSuccess \"npm run alias\"",
     "alias": "tsc-alias && npm run start",
-    "start": "node ./dist/main.js",
+    "start": "node dist/src/main.js",
     "start:dev": "nodemon --watch 'src/' --exec 'ts-node -r tsconfig-paths/register  src/main.ts' -e ts",
     "create-module": "ts-node src/utils/create-module.ts",
     "dev": "npm run watch",
