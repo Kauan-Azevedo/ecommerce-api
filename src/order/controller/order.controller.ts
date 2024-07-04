@@ -132,7 +132,7 @@ class OrderController {
             }
         }
 
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError || error instanceof Prisma.PrismaClientValidationError) {
             return NextFunction()
         }
 
