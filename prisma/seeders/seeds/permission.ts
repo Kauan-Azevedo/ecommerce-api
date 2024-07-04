@@ -13,7 +13,7 @@ export async function seedPermissions() {
         permissionsFromEnv.unshift("Admin")
     }
 
-    permissionsFromEnv.forEach(async (permission) => {
+    for (const permission of permissionsFromEnv) {
         await createPermission(permission)
-    })
+    }
 }
