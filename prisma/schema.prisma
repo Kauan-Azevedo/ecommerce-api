@@ -66,12 +66,15 @@ model PaymentMethod {
 }
 
 model OrderInfo {
-  id        Int     @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   productId Int
   orderId   Int
   quantity  Int
-  product   Product @relation(fields: [productId], references: [id])
-  order     Order   @relation(fields: [orderId], references: [id], name: "OrderToOrderInfo")
+  product   Product   @relation(fields: [productId], references: [id])
+  order     Order     @relation(fields: [orderId], references: [id], name: "OrderToOrderInfo")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime?
 
   @@map("Order_Info")
 }
