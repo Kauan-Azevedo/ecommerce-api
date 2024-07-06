@@ -5,12 +5,12 @@ import { Authenticated } from "@/utils/auth.decorator";
 import { Prisma } from "@prisma/client";
 
 class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   async createUser(req: Request, res: Response): Promise<void> {
     try {
       const user = await this.usersService.createUser(req.body);
-      res.status(200).json(user);
+      res.status(201).json(user);
     } catch (error) {
       this.userErrorHandler(error, req, res, () => {
         prismaErrorHandler(error, req, res);
