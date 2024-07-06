@@ -4,7 +4,7 @@ export interface OrderData {
   statusid: number;
   userId: number;
   description?: string;
-  date: Date;
+  date?: Date;
   value: number;
   orderItems: OrderItemData[];
 }
