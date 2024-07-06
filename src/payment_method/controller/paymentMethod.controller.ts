@@ -4,7 +4,7 @@ import prismaErrorHandler from "prisma/middleware/errorHandler";
 import { Prisma } from "@prisma/client";
 
 export class PaymentMethodController {
-  constructor(private readonly paymentMethodService: PaymentMethodService) {}
+  constructor(private readonly paymentMethodService: PaymentMethodService) { }
 
   async createPaymentMethod(req: Request, res: Response) {
     try {
@@ -20,7 +20,7 @@ export class PaymentMethodController {
           });
       }
 
-      return res.json(paymentMethod);
+      res.status(201).json(paymentMethod);
     } catch (error) {
       console.log(error);
       return this.PaymentMethodErrorHandler(

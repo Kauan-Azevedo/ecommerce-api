@@ -3,14 +3,14 @@ import { PaymentStatusService } from "../services/paymentStatus.service";
 import prismaErrorHandler from "prisma/middleware/errorHandler";
 
 class PaymentStatusController {
-  constructor(private readonly paymentStatusService: PaymentStatusService) {}
+  constructor(private readonly paymentStatusService: PaymentStatusService) { }
 
   async createPaymentStatus(req: Request, res: Response) {
     try {
       const paymentStatus = await this.paymentStatusService.createPaymentStatus(
         req.body,
       );
-      return res.json(paymentStatus);
+      return res.status(201).json(paymentStatus);
     } catch (error) {
       return this.paymentStatusErrorHandler(
         error,

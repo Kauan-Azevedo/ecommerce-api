@@ -4,7 +4,7 @@ import prismaErrorHandler from "prisma/middleware/errorHandler";
 import { Request, Response, NextFunction } from "express";
 
 class StatusController {
-  constructor(private readonly statusService: StatusService) {}
+  constructor(private readonly statusService: StatusService) { }
 
   async getAll(req: Request, res: Response) {
     try {
@@ -42,7 +42,7 @@ class StatusController {
   async create(req: Request, res: Response) {
     try {
       const data = await this.statusService.create(req.body);
-      res.json(data);
+      res.status(201).json(data);
     } catch (error: any) {
       this.statusErrorHandler(error, req, res, () => {
         prismaErrorHandler(error, req, res);
