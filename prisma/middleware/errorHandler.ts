@@ -9,7 +9,7 @@ const prismaErrorHandler = (
 ) => {
   if (err instanceof Prisma.PrismaClientValidationError) {
     err as Prisma.PrismaClientValidationError
-    return res.status(400).json({ error: "invalid payload" })
+    return res.status(400).json({ error: "invalid payload provided." })
   }
 
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
