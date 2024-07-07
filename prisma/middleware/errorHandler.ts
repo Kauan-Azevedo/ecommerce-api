@@ -7,6 +7,11 @@ const prismaErrorHandler = (
   res: Response,
   next?: NextFunction
 ) => {
+  if (err instanceof Prisma.PrismaClientValidationError) {
+    err as Prisma.PrismaClientValidationError
+    return res.status(400).json({ error: "invalid payload" })
+  }
+
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     switch (err.code) {
       case "P1000":
@@ -203,11 +208,6 @@ const prismaErrorHandler = (
       default:
         return res.status(500).json({ error: { message: "An unexpected error occurred.", code: err.code } });
     }
-  }
-
-  if (err instanceof Prisma.PrismaClientValidationError) {
-    err as Prisma.PrismaClientValidationError
-    return res.status(400).json({ error: "invalid payload, check your json" })
   }
 
   return res.status(500).json({ error: { message: "An unexpected error occurred." } });
