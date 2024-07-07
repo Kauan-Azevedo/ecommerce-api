@@ -7,8 +7,6 @@ import { OrderItemData } from "../interfaces/order.interfaces";
 
 const prisma = new PrismaClient();
 
-//RESOLVER CONFLITO AO DAR UPDATE NO ORDER (Produto não retonar ao stock e order fica vazia)
-
 class OrderService {
   isValidOrderItems(orderItems: [OrderItemData]): boolean {
     orderItems.forEach((item) => {
