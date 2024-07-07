@@ -1,0 +1,10 @@
+{
+    "watchers": {
+        "limit": 524288
+    },
+    "watch": [
+        "src"
+    ],
+    "ext": "ts",
+    "exec": "ts-node -r tsconfig-paths/register  src/main.ts"
+}

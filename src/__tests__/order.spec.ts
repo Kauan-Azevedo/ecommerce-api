@@ -231,3 +231,30 @@ describe('GET /orders', () => {
         ]));
     });
 });
+
+describe("GET /orders/:id", () => {
+    it("should get an order by id", async () => {
+        const response = await request(app).get("/orders/1").expect(200);
+
+        expect(response.body).toHaveProperty("id", 1);
+        expect(response.body).toHaveProperty("orderInfos");
+        expect(response.body.orderInfos).toHaveLength(1);
+        expect(response.body.orderInfos[0]).toHaveProperty("productId", 1);
+        expect(response.body.orderInfos[0]).toHaveProperty("quantity", 1);
+        expect(response.body).toHaveProperty("paymentMethodId", 1);
+        expect(response.body).toHaveProperty("paymentStatusId", 1);
+        expect(response.body).toHaveProperty("statusid", 1);
+        expect(response.body).toHaveProperty("userId", 1);
+    });
+});
+
+// describe("GET /orders/user/:id", () => {
+//     it("should get orders by user id", async () => {
+//         const response = await request(app).get("/orders/user/1").expect(200);
+
+//         expect(response.body).toHaveLength(5);
+//         expect(response.body).toEqual(expect.arrayContaining([
+//             expect.objectContaining({ id: 1 }),
+//         ]));
+//     });
+// });
