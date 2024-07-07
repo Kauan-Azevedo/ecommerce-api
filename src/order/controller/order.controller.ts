@@ -45,6 +45,11 @@ class OrderController {
   async getAllOrders(req: Request, res: Response): Promise<void> {
     try {
       const orders = await this.orderService.getAllOrders();
+
+      if (orders.length === 0 || !orders) {
+        throw new PrismaError404("No found any orders")
+      }
+
       res.status(200).json(orders);
     } catch (error) {
       this.orderErrorHandler(error, req, res, () => {
