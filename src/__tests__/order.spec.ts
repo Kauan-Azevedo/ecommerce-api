@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '@/main';
+import { app, server } from '@/main';
 import { PrismaClient } from '@prisma/client';
 import { exec } from 'child_process';
 import util from 'util';
@@ -72,6 +72,7 @@ describe('Order API', () => {
     });
 
     afterAll(async () => {
+        server.close();
         await prisma.$disconnect();
     });
 
@@ -248,13 +249,35 @@ describe("GET /orders/:id", () => {
     });
 });
 
-// describe("GET /orders/user/:id", () => {
-//     it("should get orders by user id", async () => {
-//         const response = await request(app).get("/orders/user/1").expect(200);
+describe("GET /orders/user/:id", () => {
+    it("should get orders by user id", async () => {
+        const response = await request(app).get("/orders/user/1").expect(200);
 
-//         expect(response.body).toHaveLength(5);
-//         expect(response.body).toEqual(expect.arrayContaining([
-//             expect.objectContaining({ id: 1 }),
-//         ]));
-//     });
-// });
+        expect(response.body).toHaveLength(2);
+        expect(response.body).toEqual(expect.arrayContaining([
+            expect.objectContaining({ id: 1 }),
+        ]));
+    });
+});
+
+describe("GET /orders/payment-status/:id", () => {
+    it("should get orders by payment status id", async () => {
+        const response = await request(app).get("/orders/payment-status/1").expect(200);
+
+        expect(response.body).toHaveLength(2);
+        expect(response.body).toEqual(expect.arrayContaining([
+            expect.objectContaining({ id: 1 }),
+        ]));
+    });
+})
+
+describe("GET /orders/payment-method/:id", () => {
+    it("should get orders by payment method id", async () => {
+        const response = await request(app).get("/orders/payment-method/1").expect(200);
+
+        expect(response.body).toHaveLength(2);
+        expect(response.body).toEqual(expect.arrayContaining([
+            expect.objectContaining({ id: 1 }),
+        ]));
+    });
+})
