@@ -106,4 +106,25 @@ describe("Payment Method API", () => {
 
         expect(response.body).toEqual({ "error": "Invalid payload provided." });
     });
+
+    it("should return 404 when updating a payment method that does not exist", async () => {
+        const paymentMethod = {
+            name: "Updated payment method"
+        }
+
+        const response = await request(app)
+            .put("/paymentmethod/100")
+            .send(paymentMethod)
+            .expect(404);
+
+        expect(response.body).toEqual({ "error": "Payment method not found" });
+    })
+
+    it("should return 404 when deleting a payment method that does not exist", async () => {
+        const response = await request(app)
+            .delete("/paymentmethod/100")
+            .expect(404);
+
+        expect(response.body).toEqual({ "error": "Payment method not found" });
+    })
 })
