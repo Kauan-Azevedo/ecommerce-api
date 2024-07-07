@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import prismaErrorHandler from "../prisma/middleware/errorHandler";
@@ -23,7 +22,8 @@ import { options } from "./utils/swagger-options";
 
 const specs = swaggerJsdoc(options);
 const app = express();
-const port = 3000;
+const port = Number(process.env.APPLICATION_PORT) || Number(3000);
+const isDev = Boolean(process.env.APPLICATION_DEV_MODE) === true;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////Config middlewares and app stuff////////////////////////////////
@@ -32,7 +32,6 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-app.use(morgan("dev"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use(prismaErrorHandler);
 
@@ -58,6 +57,6 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // Iniciar o servidor
-const server = runServer(app, port);
+const server = runServer(app, port, isDev);
 
 export { server, app };
