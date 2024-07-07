@@ -9,6 +9,7 @@ const prisma = new PrismaClient();
 
 describe("Payment-status API", () => {
     beforeEach(async () => {
+        process.env.APPLICATION_DEV_MODE = "false"
         // Reset the database state before each test
         try {
             await execPromise('npx prisma migrate reset --force');
