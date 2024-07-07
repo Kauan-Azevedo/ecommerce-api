@@ -5,6 +5,7 @@ import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import prismaErrorHandler from "../prisma/middleware/errorHandler";
+import runServer from "./server";
 
 // Importing Routers
 import usersRouter from "./user/router/user.router";
@@ -57,8 +58,6 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // Iniciar o servidor
-app.listen(port, () => {
-  console.log(`🚀 Server is running at http://localhost:${port} 🚀`);
-}).close()
+const server = runServer(app, port);
 
-export default app;
+export { server, app };
