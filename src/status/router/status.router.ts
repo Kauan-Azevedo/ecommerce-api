@@ -89,7 +89,7 @@ router.get("/:id", (req, res) => statusController.getById(req, res));
 
 /**
  * @swagger
- * /status:
+ * /status/create:
  *   post:
  *     summary: Create a new status
  *     tags: [Statuses]
@@ -109,7 +109,7 @@ router.get("/:id", (req, res) => statusController.getById(req, res));
  *       500:
  *         description: Some server error
  */
-router.post("/", (req, res) => statusController.create(req, res));
+router.post("/create", (req, res) => statusController.create(req, res));
 
 /**
  * @swagger

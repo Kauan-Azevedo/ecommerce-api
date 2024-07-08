@@ -55,7 +55,7 @@ const seedData = async () => {
         .expect(201);
 
     await request(app)
-        .post('/status')
+        .post('/status/create')
         .send(status)
         .expect(201);
 }
