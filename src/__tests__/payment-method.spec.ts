@@ -128,4 +128,21 @@ describe("Payment Method API", () => {
 
         expect(response.body).toEqual({ "error": "Payment method not found" });
     })
+
+    it("should delete a payment method", async () => {
+        const paymentMethod = {
+            name: "Test payment Method 1"
+        }
+
+        await request(app)
+            .post("/paymentmethod/create")
+            .send(paymentMethod)
+            .expect(201);
+
+        const response = await request(app)
+            .delete("/paymentmethod/1")
+            .expect(200);
+
+        expect(response.body.deletedAt).not.toBeNull();
+    })
 })
