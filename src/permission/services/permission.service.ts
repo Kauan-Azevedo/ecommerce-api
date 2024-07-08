@@ -34,11 +34,14 @@ class PermissionService {
   }
 
   async deletePermission(id: number) {
-    return await prisma.permission.delete({
+    return await prisma.permission.update({
       where: {
         id,
       },
-    });
+      data: {
+        deletedAt: new Date(),
+      },
+    })
   }
 }
 

@@ -45,7 +45,7 @@ const seedData = async () => {
         .expect(201);
 
     await request(app)
-        .post('/permissions')
+        .post('/permissions/create')
         .send(permission)
         .expect(201);
 
