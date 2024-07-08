@@ -30,7 +30,7 @@ const seedData = async () => {
     }
 
     await request(app)
-        .post('/products')
+        .post('/products/create')
         .send(product)
         .expect(201);
 
