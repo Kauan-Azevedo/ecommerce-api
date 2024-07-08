@@ -7,5 +7,6 @@ set -e
 sh ./scripts/wait_db.sh
 sh ./scripts/npx_prisma_migrate.sh
 sh ./scripts/npx_prisma_generate.sh
+sh ./scripts/npm_run_test.sh
 sh ./scripts/npm_run_seed.sh
 sh ./scripts/npm_run.sh
