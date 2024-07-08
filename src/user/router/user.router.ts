@@ -34,6 +34,9 @@ const userController = new UsersController(userService);
  *         password:
  *           type: string
  *           example: password123
+ *         confirm_password:
+ *           type: string
+ *           example: password123
  *         id_permission:
  *           type: integer
  *           example: 1
@@ -59,7 +62,7 @@ const userController = new UsersController(userService);
 
 /**
  * @swagger
- * /users:
+ * /users/create:
  *   post:
  *     summary: Create a new User
  *     tags: [User]
@@ -71,7 +74,7 @@ const userController = new UsersController(userService);
  *       400:
  *         $ref: '#/components/responses/Invalid'
  */
-router.post("/", userController.createUser.bind(userController));
+router.post("/create", userController.createUser.bind(userController));
 
 /**
  * @swagger
