@@ -48,7 +48,7 @@ class PaymentStatusController {
         throw new PrismaError404("Payment status not found")
       }
 
-      return res.json(paymentStatus);
+      res.status(200).json(paymentStatus);
     } catch (error) {
       this.paymentStatusErrorHandler(
         error,
