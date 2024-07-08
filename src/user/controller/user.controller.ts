@@ -18,7 +18,11 @@ class UsersController {
   validatePayload(req: Request): boolean {
     const { email, password, id_permission, first_name, last_name, } = req.body;
 
-    if (!email || !password || !id_permission || email === "" || password === "" || id_permission <= 0 || first_name === "" || last_name === "" || typeof first_name !== "string" || typeof last_name !== "string" || typeof email !== "string" || typeof password !== "string" || typeof id_permission !== "number") {
+    const typesValidation = typeof first_name !== "string" || typeof last_name !== "string" || typeof email !== "string" || typeof password !== "string" || typeof id_permission !== "number"
+    const emptyValidation = email === "" || password === "" || id_permission <= 0 || first_name === "" || last_name === ""
+    const nullValidation = email === null || password === null || id_permission === null || first_name === null || last_name === null
+
+    if (typesValidation || emptyValidation || nullValidation) {
       return false
     }
     return true
@@ -37,6 +41,8 @@ class UsersController {
       if (req.body.password !== req.body.confirm_password) {
         throw new PrismaError400("Password confirmation don't match.");
       }
+
+      req.body.confirm_password = undefined;
 
       const adminID = await this.usersService.getAdminPermission();
 
@@ -167,10 +173,21 @@ class UsersController {
       return
     }
 
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      error as Prisma.PrismaClientValidationError;
+      res.status(400).json({ error: "Invalid payload provided." });
+      return
+    }
+
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2025"
     ) {
+      if (error.meta && error.meta.cause === "No 'Permission' record(s) (needed to inline the relation on 'User' record(s)) was found for a nested connect on one-to-many relation 'PermissionToUser'.") {
+        res.status(404).json({ message: "Permission not found" });
+        return
+      }
+
       res.status(404).json({ message: "User not found" });
       return;
     }
