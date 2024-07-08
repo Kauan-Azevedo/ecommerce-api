@@ -167,5 +167,6 @@ describe("Payment-status API", () => {
 
         expect(response.body.id).toEqual(1);
         expect(response.body.name).toEqual("Test payment Status 1");
+        expect(response.body.deletedAt).not.toBeNull();
     })
 })
