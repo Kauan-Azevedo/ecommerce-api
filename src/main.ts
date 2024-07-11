@@ -1,10 +1,10 @@
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import prismaErrorHandler from "../prisma/middleware/errorHandler";
+import runServer from "./server";
 
 // Importing Routers
 import usersRouter from "./user/router/user.router";
@@ -19,10 +19,12 @@ import reportRouter from "./report/router/report.router";
 
 // Importing Swagger Options
 import { options } from "./utils/swagger-options";
+import morgan from "morgan";
 
 const specs = swaggerJsdoc(options);
 const app = express();
-const port = 3000;
+const port = Number(process.env.APPLICATION_PORT) || Number(3000);
+const isDev = Boolean(process.env.APPLICATION_DEV_MODE) === true;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////Config middlewares and app stuff////////////////////////////////
@@ -31,9 +33,11 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-app.use(morgan("dev"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use(prismaErrorHandler);
+if (isDev) {
+  app.use(morgan("dev"));
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////Setup routers/////////////////////////////////////////////
@@ -57,8 +61,6 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // Iniciar o servidor
-app.listen(port, () => {
-  console.log(`🚀 Server is running at http://localhost:${port} 🚀`);
-});
+const server = runServer(app, port, isDev);
 
-export default app;
+export { server, app };

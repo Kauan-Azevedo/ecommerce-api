@@ -47,7 +47,7 @@ const productController = new ProductController(productService);
 
 /**
  * @swagger
- * /products:
+ * /products/create:
  *   post:
  *     summary: Create a new product
  *     tags: [Products]
@@ -59,7 +59,7 @@ const productController = new ProductController(productService);
  *       400:
  *         $ref: '#/components/responses/Invalid'
  */
-router.post("/", productController.create.bind(productController));
+router.post("/create", productController.create.bind(productController));
 
 /**
  * @swagger

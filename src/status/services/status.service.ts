@@ -29,11 +29,16 @@ class StatusService {
   }
 
   async delete(id: number) {
-    return await prisma.status.delete({
-      where: {
-        id: id,
+    return await prisma.status.update(
+      {
+        where: {
+          id: id,
+        },
+        data: {
+          deletedAt: new Date(),
+        },
       },
-    });
+    )
   }
 }
 

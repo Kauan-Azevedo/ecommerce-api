@@ -22,6 +22,9 @@ export class PaymentMethodService {
   }
 
   async deletePaymentMethod(id: number) {
-    return await prisma.paymentMethod.delete({ where: { id } });
+    return await prisma.paymentMethod.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    })
   }
 }

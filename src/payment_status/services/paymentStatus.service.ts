@@ -19,7 +19,10 @@ class PaymentStatusService {
   }
 
   async deletePaymentStatus(id: number) {
-    return await prisma.paymentStatus.delete({ where: { id } });
+    return await prisma.paymentStatus.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    })
   }
 }
 

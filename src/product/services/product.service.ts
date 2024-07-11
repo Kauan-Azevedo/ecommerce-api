@@ -1,7 +1,7 @@
 import { prisma } from "@/db/prisma.service";
 
 class ProductService {
-  constructor() {}
+  constructor() { }
 
   async getAll() {
     return await prisma.product.findMany();
@@ -31,9 +31,12 @@ class ProductService {
   }
 
   async delete(id: number) {
-    return await prisma.product.delete({
+    return await prisma.product.update({
       where: {
         id: id,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
   }

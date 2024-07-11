@@ -1,60 +1,60 @@
 import { PrismaClient, Order } from "@prisma/client";
-
-import {
-  OrderData,
-  PaymentMethod,
-  Product,
-} from "../interfaces/order.interfaces";
+import { OrderData, PaymentMethod } from "../interfaces/order.interfaces";
+import { PrismaError404 } from "../../../prisma/middleware/errors/Prisma404";
+import { PrismaError422 } from "../../../prisma/middleware/errors/Prisma422";
+import { PrismaError400 } from "../../../prisma/middleware/errors/Prisma400";
+import { OrderItemData } from "../interfaces/order.interfaces";
 
 const prisma = new PrismaClient();
 
 class OrderService {
+  isValidOrderItems(orderItems: [OrderItemData]): boolean {
+    orderItems.forEach((item) => {
+      if (!item.quantity || !item.productId) {
+        return false;
+      }
+    })
+
+    return true
+  }
   async calculatePrice(orderData: OrderData): Promise<number> {
-    const total = await orderData.orderItems.reduce(
-      async (accumulatorPromise, currentItem) => {
+    try {
+      const total = await orderData.orderItems.reduce(async (accumulatorPromise, currentItem) => {
         const accumulator = await accumulatorPromise;
-        const productData = await prisma.product.findUnique({
+        const product = await prisma.product.findUnique({
           where: { id: currentItem.productId },
         });
 
-        if (!productData) {
-          throw new Error(`Product with id ${currentItem.productId} not found`);
+        if (!product) {
+          throw new PrismaError404(`Product with id ${currentItem.productId} not found`);
         }
 
-        const product: Product = productData as unknown as Product;
-
         if (product.stock < currentItem.quantity) {
-          throw new Error(
-            `Product with id ${currentItem.productId} has insufficient stock`,
-          );
+          throw new PrismaError422(`Product with id ${currentItem.productId} has insufficient stock`);
         }
 
         return accumulator + product.value * currentItem.quantity;
-      },
-      Promise.resolve(0),
-    );
+      }, Promise.resolve(0));
 
-    return total;
+      return total;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async reduceStock(quantity: number, orderData: OrderData): Promise<void> {
-    await orderData.orderItems.reduce(
-      async (accumulatorPromise, currentItem) => {
-        await accumulatorPromise;
-        const productData = await prisma.product.findUnique({
+    try {
+      await Promise.all(orderData.orderItems.map(async (currentItem) => {
+        const product = await prisma.product.findUnique({
           where: { id: currentItem.productId },
         });
 
-        if (!productData) {
-          throw new Error(`Product with id ${currentItem.productId} not found`);
+        if (!product) {
+          throw new PrismaError404(`Product with id ${currentItem.productId} not found`);
         }
 
-        const product: Product = productData as unknown as Product;
-
         if (product.stock < currentItem.quantity) {
-          throw new Error(
-            `Product with id ${currentItem.productId} has insufficient stock`,
-          );
+          throw new PrismaError422(`Product with id ${currentItem.productId} has insufficient stock`);
         }
 
         const newProductStock = product.stock - quantity;
@@ -65,43 +65,34 @@ class OrderService {
             stock: newProductStock,
           },
         });
-      },
-      Promise.resolve(),
-    );
+      }));
+    } catch (error) {
+      throw error;
+    }
   }
 
-  async paymentMethodById(
-    paymentMethodId: number,
-  ): Promise<PaymentMethod | null> {
+  async paymentMethodById(paymentMethodId: number): Promise<PaymentMethod | null> {
     return await prisma.paymentMethod.findUnique({
       where: { id: paymentMethodId },
     });
   }
 
-  async paymentStatusById(
-    paymentStatusId: number,
-  ): Promise<PaymentMethod | null> {
+  async paymentStatusById(paymentStatusId: number): Promise<PaymentMethod | null> {
     return await prisma.paymentMethod.findUnique({
       where: { id: paymentStatusId },
     });
   }
 
-  async returnItemsToStock(
-    quantity: number,
-    orderData: OrderData,
-  ): Promise<void> {
-    await orderData.orderItems.reduce(
-      async (accumulatorPromise, currentItem) => {
-        await accumulatorPromise;
-        const productData = await prisma.product.findUnique({
+  async returnItemsToStock(quantity: number, orderData: OrderData): Promise<void> {
+    try {
+      await Promise.all(orderData.orderItems.map(async (currentItem) => {
+        const product = await prisma.product.findUnique({
           where: { id: currentItem.productId },
         });
 
-        if (!productData) {
-          throw new Error(`Product with id ${currentItem.productId} not found`);
+        if (!product) {
+          throw new PrismaError404(`Product with id ${currentItem.productId} not found`);
         }
-
-        const product: Product = productData as unknown as Product;
 
         await prisma.product.update({
           where: { id: currentItem.productId },
@@ -109,193 +100,62 @@ class OrderService {
             stock: product.stock + quantity,
           },
         });
-      },
-      Promise.resolve(),
-    );
+      }));
+    } catch (error) {
+      throw error;
+    }
   }
 
-  async returnAllTheItemsToStock(orderData: Order): Promise<void> {
-    const ordersInfo = await prisma.orderInfo.findMany({
-      where: { orderId: orderData.id },
-    });
+  async returnAllTheItemsToStock(order: Order): Promise<void> {
+    try {
+      const orderInfos = await prisma.orderInfo.findMany({
+        where: { orderId: order.id },
+      });
 
-    ordersInfo.forEach(async (item) => {
-      await prisma.product
-        .findUnique({
+      await Promise.all(orderInfos.map(async (item) => {
+        const product = await prisma.product.findUnique({
           where: { id: item.productId },
-        })
-        .then(async (productData) => {
-          const product: Product = productData as unknown as Product;
-
-          await prisma.product.update({
-            where: { id: item.productId },
-            data: {
-              stock: product.stock + item.quantity,
-            },
-          });
         });
-    });
+
+        if (!product) {
+          throw new PrismaError404(`Product not found`);
+        }
+
+        await prisma.product.update({
+          where: { id: item.productId },
+          data: {
+            stock: product.stock + item.quantity,
+          },
+        });
+      }));
+    } catch (error) {
+      throw error;
+    }
   }
 
   async createOrder(orderData: OrderData): Promise<Order> {
-    const orderTotalValue = await this.calculatePrice(orderData);
+    if (!this.isValidOrderItems(orderData.orderItems as unknown as [OrderItemData])) {
+      throw new PrismaError400("Invalid order items");
+    }
 
-    orderData.value = orderTotalValue;
+    try {
 
-    const order = await prisma.order.create({
-      data: {
-        paymentMethodId: orderData.paymentMethodId,
-        paymentStatusId: orderData.paymentStatusId,
-        statusid: orderData.statusid,
-        userId: orderData.userId,
-        description: orderData.description,
-        date: orderData.date,
-        value: orderData.value,
-        orderInfos: {
-          create: orderData.orderItems.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-          })),
-        },
-      },
-      include: {
-        orderInfos: true,
-      },
-    });
-
-    order.orderInfos.forEach(async (item) => {
-      this.reduceStock(item.quantity, orderData);
-    });
-
-    return order;
-  }
-
-  async getAllOrders(): Promise<Order[]> {
-    return await prisma.order.findMany({
-      where: { deletedAt: null },
-      include: {
-        orderInfos: {
-          include: {
-            product: true,
-          },
-        },
-        user: true,
-        paymentMethod: true,
-        paymentStatus: true,
-      },
-    });
-  }
-
-  async getOrdersByUserId(userId: number): Promise<Order[]> {
-    return await prisma.order.findMany({
-      where: { userId: userId, deletedAt: null },
-      include: {
-        orderInfos: {
-          include: {
-            product: true,
-          },
-        },
-        user: true,
-        paymentMethod: true,
-        paymentStatus: true,
-      },
-    });
-  }
-
-  async getOrdersByPaymentStatus(paymentStatusId: number): Promise<Order[]> {
-    return await prisma.order.findMany({
-      where: { paymentStatusId: paymentStatusId, deletedAt: null },
-      include: {
-        orderInfos: {
-          include: {
-            product: true,
-          },
-        },
-        user: true,
-        paymentMethod: true,
-        paymentStatus: true,
-      },
-    });
-  }
-
-  async getOrdersByPaymentMethod(paymentMethodId: number): Promise<Order[]> {
-    return await prisma.order.findMany({
-      where: { paymentMethodId: paymentMethodId, deletedAt: null },
-      include: {
-        orderInfos: {
-          include: {
-            product: true,
-          },
-        },
-        user: true,
-        paymentMethod: true,
-        paymentStatus: true,
-      },
-    });
-  }
-
-  async getOrderById(orderId: number): Promise<Order | null> {
-    return await prisma.order.findUnique({
-      where: { id: orderId },
-      include: {
-        orderInfos: {
-          include: {
-            product: true,
-          },
-        },
-        user: true,
-        paymentMethod: true,
-        paymentStatus: true,
-      },
-    });
-  }
-
-  async updateOrder(orderId: number, orderData: OrderData): Promise<Order> {
-    return await prisma.$transaction(async (prisma) => {
-      const paymentMethod = await this.paymentMethodById(
-        orderData.paymentMethodId,
-      );
-      const paymentStatus = await this.paymentStatusById(
-        orderData.paymentStatusId,
-      );
+      const paymentMethod = await this.paymentMethodById(orderData.paymentMethodId);
+      const paymentStatus = await this.paymentStatusById(orderData.paymentStatusId);
 
       if (!paymentMethod) {
-        throw new Error("Invalid payment method");
+        throw new PrismaError400("Invalid payment method");
       }
 
       if (!paymentStatus) {
-        throw new Error("Invalid payment status");
+        throw new PrismaError400("Invalid payment status");
       }
 
-      // if (paymentStatus.name === 'paid') {
-      //     throw new Error('You cannot change the payment status to paid')
-      // }
+      const orderTotalValue = await this.calculatePrice(orderData);
 
-      orderData.orderItems.forEach(async (item) => {
-        const oldOrderInfo = await prisma.orderInfo.findMany({
-          where: { orderId: orderId },
-        });
+      orderData.value = orderTotalValue;
 
-        oldOrderInfo.forEach(async (oldItem) => {
-          if (item.quantity > oldItem.quantity) {
-            const quantity = item.quantity - oldItem.quantity;
-            console.log(item.quantity, oldItem.quantity, quantity);
-            await this.reduceStock(quantity, orderData);
-          } else {
-            const quantity = oldItem.quantity - item.quantity;
-            await this.returnItemsToStock(quantity, orderData);
-          }
-        });
-      });
-
-      await prisma.orderInfo.deleteMany({
-        where: { orderId: orderId },
-      });
-
-      orderData.value = await this.calculatePrice(orderData);
-
-      const order = await prisma.order.update({
-        where: { id: orderId },
+      const newOrder = await prisma.order.create({
         data: {
           paymentMethodId: orderData.paymentMethodId,
           paymentStatusId: orderData.paymentStatusId,
@@ -304,7 +164,6 @@ class OrderService {
           description: orderData.description,
           date: orderData.date,
           value: orderData.value,
-          updatedAt: new Date(),
           orderInfos: {
             create: orderData.orderItems.map((item) => ({
               productId: item.productId,
@@ -317,21 +176,225 @@ class OrderService {
         },
       });
 
+      await Promise.all(newOrder.orderInfos.map((item) => {
+        return this.reduceStock(item.quantity, orderData);
+      }));
+
+      return newOrder;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllOrders(): Promise<Order[]> {
+    try {
+      return await prisma.order.findMany({
+        where: { deletedAt: null },
+        include: {
+          orderInfos: {
+            include: {
+              product: true,
+            },
+          },
+          user: true,
+          paymentMethod: true,
+          paymentStatus: true,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getOrdersByUserId(userId: number): Promise<Order[]> {
+    try {
+      return await prisma.order.findMany({
+        where: { userId: userId, deletedAt: null },
+        include: {
+          orderInfos: {
+            include: {
+              product: true,
+            },
+          },
+          user: true,
+          paymentMethod: true,
+          paymentStatus: true,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getOrdersByPaymentStatus(paymentStatusId: number): Promise<Order[]> {
+    try {
+      const orders = await prisma.order.findMany({
+        where: { paymentStatusId: paymentStatusId, deletedAt: null },
+        include: {
+          orderInfos: {
+            include: {
+              product: true,
+            },
+          },
+          user: true,
+          paymentMethod: true,
+          paymentStatus: true,
+        },
+      });
+
+      if (!orders) {
+        throw new PrismaError404("There is no order with this payment status");
+      }
+
+      return orders;
+
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getOrdersByPaymentMethod(paymentMethodId: number): Promise<Order[]> {
+    try {
+      const order = await prisma.order.findMany({
+        where: { paymentMethodId: paymentMethodId, deletedAt: null },
+        include: {
+          orderInfos: {
+            include: {
+              product: true,
+            },
+          },
+          user: true,
+          paymentMethod: true,
+          paymentStatus: true,
+        },
+      });
+
+      if (!order) {
+        throw new PrismaError404("There is no order with this payment method");
+      }
+
       return order;
-    });
+
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getOrderById(orderId: number): Promise<Order | null> {
+    try {
+      const order = await prisma.order.findUnique({
+        where: { id: orderId },
+        include: {
+          orderInfos: {
+            include: {
+              product: true,
+            },
+          },
+          user: true,
+          paymentMethod: true,
+          paymentStatus: true,
+        },
+      });
+
+      if (!order) {
+        throw new PrismaError404("Order not found");
+      }
+
+      return order;
+
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateOrder(orderId: number, orderData: OrderData): Promise<Order> {
+    if (!this.isValidOrderItems(orderData.orderItems as unknown as [OrderItemData])) {
+      throw new PrismaError400("Invalid order items");
+    }
+
+    try {
+      const paymentMethod = await this.paymentMethodById(orderData.paymentMethodId);
+      const paymentStatus = await this.paymentStatusById(orderData.paymentStatusId);
+      const checkOrder = await prisma.order.findUnique({
+        where: { id: orderId },
+      });
+
+      if (!checkOrder) {
+        throw new PrismaError404("Order not found");
+      }
+
+      if (!paymentMethod) {
+        throw new PrismaError400("Invalid payment method");
+      }
+
+      if (!paymentStatus) {
+        throw new PrismaError400("Invalid payment status");
+      }
+
+      const oldOrder = await prisma.order.findUnique({
+        where: { id: orderId },
+        include: {
+          orderInfos: true,
+        },
+      });
+
+      if (oldOrder?.orderInfos) {
+        await this.returnAllTheItemsToStock(oldOrder);
+
+        for (const item of oldOrder.orderInfos) {
+          await prisma.orderInfo.update({
+            where: { id: item.id },
+            data: {
+              deletedAt: new Date(),
+            },
+          });
+        }
+
+        await prisma.orderInfo.updateMany({
+          where: { orderId: orderId },
+          data: {
+            deletedAt: new Date(),
+          },
+        });
+
+        await prisma.order.update({
+          where: { id: orderId },
+          data: {
+            deletedAt: new Date(),
+          },
+        });
+
+      }
+
+      orderData.value = await this.calculatePrice(orderData);
+
+      const updatedOrder = await this.createOrder(orderData);
+      return updatedOrder;
+
+    } catch (error) {
+      throw error;
+    }
   }
 
   async deleteOrder(orderId: number): Promise<Order> {
-    const order = await prisma.order.update({
-      where: { id: orderId },
-      data: {
-        deletedAt: new Date(),
-      },
-    });
+    try {
+      const order = await prisma.order.update({
+        where: { id: orderId },
+        data: {
+          deletedAt: new Date(),
+        },
+      });
 
-    this.returnAllTheItemsToStock(order);
+      if (!order) {
+        throw new PrismaError404("Order not found");
+      }
 
-    return order;
+      await this.returnAllTheItemsToStock(order);
+
+      return order;
+    } catch (error) {
+      throw error;
+    }
   }
 }
 

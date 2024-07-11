@@ -38,7 +38,7 @@ const permissionController = new PermissionController(permissionService);
 
 /**
  * @swagger
- * /permissions/:
+ * /permissions/create:
  *   post:
  *     summary: Create a new permission
  *     tags: [Permissions]
@@ -51,7 +51,7 @@ const permissionController = new PermissionController(permissionService);
  *         $ref: '#/components/responses/Invalid'
  */
 router.post(
-  "/",
+  "/create",
   permissionController.createPermission.bind(permissionController),
 );
 

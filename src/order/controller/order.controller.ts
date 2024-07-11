@@ -1,10 +1,26 @@
 import { Request, Response, NextFunction } from "express";
 import { OrderService } from "../services/order.service";
 import prismaErrorHandler from "../../../prisma/middleware/errorHandler";
+import { PrismaError404 } from "../../../prisma/middleware/errors/Prisma404";
+import { PrismaHttpError } from "../../../prisma/middleware/errors/PrismaHttpError";
 import { Prisma } from "@prisma/client";
+import { OrderData } from "../interfaces/order.interfaces";
 
 class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(private readonly orderService: OrderService) { }
+  isValidPayload(orderData: OrderData): boolean {
+    if (
+      !orderData.paymentMethodId ||
+      !orderData.paymentStatusId ||
+      !orderData.statusid ||
+      !orderData.userId ||
+      !orderData.orderItems
+    ) {
+      return false;
+    }
+
+    return true;
+  }
 
   ///////////////////////////////////////////////////////////////////////////
   ///////////////////////////////Getters//////////////////////////////////
@@ -17,7 +33,7 @@ class OrderController {
       if (order) {
         res.status(200).json(order);
       } else {
-        res.status(404).json({ error: "Order not found" });
+        throw new PrismaError404("Order not found");
       }
     } catch (error) {
       this.orderErrorHandler(error, req, res, () => {
@@ -29,6 +45,11 @@ class OrderController {
   async getAllOrders(req: Request, res: Response): Promise<void> {
     try {
       const orders = await this.orderService.getAllOrders();
+
+      if (orders.length === 0 || !orders) {
+        throw new PrismaError404("No found any orders")
+      }
+
       res.status(200).json(orders);
     } catch (error) {
       this.orderErrorHandler(error, req, res, () => {
@@ -80,6 +101,11 @@ class OrderController {
   /////////////////////////////////////////////////////////////////////////
 
   async createOrder(req: Request, res: Response): Promise<void> {
+    if (!this.isValidPayload(req.body)) {
+      res.status(400).json({ error: "Invalid payload" });
+      return;
+    }
+
     try {
       const orderData = req.body;
       const order = await this.orderService.createOrder(orderData);
@@ -108,7 +134,7 @@ class OrderController {
     try {
       const orderId = parseInt(req.params.id);
       const order = await this.orderService.deleteOrder(orderId);
-      res.status(200).json(order);
+      res.status(204).json(order);
     } catch (error) {
       this.orderErrorHandler(error, req, res, () => {
         prismaErrorHandler(error, req, res);
@@ -140,6 +166,11 @@ class OrderController {
         res.status(404).json({ error: "Order not found" });
         return;
       }
+    }
+
+    if (error instanceof PrismaHttpError) {
+      res.status(error.code).json({ error: error.message });
+      return
     }
 
     if (
