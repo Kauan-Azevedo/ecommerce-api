@@ -19,6 +19,7 @@ import reportRouter from "./report/router/report.router";
 
 // Importing Swagger Options
 import { options } from "./utils/swagger-options";
+import morgan from "morgan";
 
 const specs = swaggerJsdoc(options);
 const app = express();
@@ -34,6 +35,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use(prismaErrorHandler);
+if (isDev) {
+  app.use(morgan("dev"));
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////Setup routers/////////////////////////////////////////////
