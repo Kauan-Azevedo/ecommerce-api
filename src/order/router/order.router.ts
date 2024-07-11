@@ -75,7 +75,7 @@ const orderController = new OrderController(orderService);
  *     requestBody:
  *       $ref: '#/components/requestBodies/OrderBody'
  *     responses:
- *       200:
+ *       201:
  *         description: Successfully created an order
  *         $ref: '#/components/responses/OrderResponse'
  *       400:
@@ -244,10 +244,11 @@ router.put("/:id", (req, res) => orderController.updateOrder(req, res));
  *         required: true
  *         description: The order ID
  *     responses:
- *       200:
+ *       204:
  *         description: Order deleted successfully
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
 router.delete("/:id", (req, res) => orderController.deleteOrder(req, res));
+
 export default router;
