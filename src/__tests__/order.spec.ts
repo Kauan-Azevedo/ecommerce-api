@@ -1,11 +1,23 @@
 import request from 'supertest';
 import { app, server } from '@/main';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import { exec } from 'child_process';
 import util from 'util';
 const execPromise = util.promisify(exec);
 
 const prisma = new PrismaClient();
+
+async function createAdminUser(): Promise<User> {
+    return prisma.user.create({
+        data: {
+            "email": "test.user@gmail.com",
+            "password": "unit_testing",
+            "id_permission": 1,
+            "first_name": "Test",
+            "last_name": "User",
+        }
+    })
+}
 
 const seedData = async () => {
     // Seed necessary data
@@ -19,15 +31,6 @@ const seedData = async () => {
     const paymentStatus = { name: "Test payment Status" };
     const permission = { name: "Admin" };
     const status = { name: "Test status" }
-
-    const user = {
-        first_name: "test",
-        last_name: "user",
-        email: "test.user@example.com",
-        phone_number: "123-123-123",
-        password: "password123",
-        id_permission: 1
-    }
 
     await request(app)
         .post('/products/create')
@@ -50,14 +53,11 @@ const seedData = async () => {
         .expect(201);
 
     await request(app)
-        .post('/users/create')
-        .send(user)
-        .expect(201);
-
-    await request(app)
         .post('/status/create')
         .send(status)
         .expect(201);
+
+    await createAdminUser();
 }
 
 describe('Order API', () => {
