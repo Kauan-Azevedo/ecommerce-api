@@ -41,7 +41,7 @@ export function Authenticated(allowedPermissions: string[]) {
 
       const token = req.header("Authorization")?.split(" ")[1];
       if (!token) {
-        res.sendStatus(403);
+        res.status(403).json({ error: "Not authenticated" });
         return;
       }
 
@@ -55,7 +55,7 @@ export function Authenticated(allowedPermissions: string[]) {
           allowedPermissions.length > 0 &&
           !allowedPermissions.includes(userPermission)
         ) {
-          res.status(403).json({ message: "Permission denied" });
+          res.status(403).json({ error: "Permission denied" });
           return;
         }
 
