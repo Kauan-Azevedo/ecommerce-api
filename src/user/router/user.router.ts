@@ -7,89 +7,116 @@ const userService = new UsersService();
 const userController = new UsersController(userService);
 
 /**
- * @swagger
- * components:
- *   schemas:
- *     User:
- *       type: object
- *       required:
- *         - first_name
- *         - last_name
- *         - email
- *         - password
- *         - id_permission
- *       properties:
- *         first_name:
- *           type: string
- *           example: John
- *         last_name:
- *           type: string
- *           example: Doe
- *         email:
- *           type: string
- *           example: john.doe@example.com
- *         phone_number:
- *           type: string
- *           example: "123-456-7890"
- *         password:
- *           type: string
- *           example: password123
- *         confirm_password:
- *           type: string
- *           example: password123
- *         id_permission:
- *           type: integer
- *           example: 1
- *   requestBodies:
- *     UserBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/User'
- *   responses:
- *     UserResponse:
- *       description: A user object
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/User'
- *     NotFound:
- *       description: The user was not found
- *     Invalid:
- *       description: Invalid data
+ *  @swagger
+ *    components:
+ *        schemas:
+ *            User:
+ *               type: object
+ *               required:
+ *                   - email
+ *                   - password
+ *                   - id_permission
+ *                   - first_name
+ *                   - last_name
+ *               properties:
+ *                   id:
+ *                      type: integer
+ *                      example: 1
+ *                   email:
+ *                      type: string
+ *                      example: "test.user@gmail.com"
+ *                   password:
+ *                      type: string
+ *                      example: "unit_testing"
+ *                   id_permission:
+ *                     type: integer
+ *                     example: 1
+ *                   first_name:
+ *                      type: string
+ *                      example: "Test"
+ *                   last_name:
+ *                      type: string
+ *                      example: "User"
+ *            ErrorResponse:
+ *               type: object
+ *               properties:
+ *                   error:
+ *                       type: string
  */
 
 /**
  * @swagger
  * /users/create:
  *   post:
- *     summary: Create a new User
+ *     summary: Create a normal user
  *     tags: [User]
+ *     description: Create a new normal user.
  *     requestBody:
- *       $ref: '#/components/requestBodies/UserBody'
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
  *     responses:
  *       201:
- *         $ref: '#/components/responses/UserResponse'
+ *         description: User created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  *       400:
- *         $ref: '#/components/responses/Invalid'
+ *         description: Invalid payload provided
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Permission not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.post("/create", userController.createUser.bind(userController));
-
 
 /**
  * @swagger
  * /users/createAdmin:
  *   post:
- *     summary: Create a new Admin User
+ *     summary: Create an admin user
  *     tags: [User]
+ *     description: Create a new admin user.
  *     requestBody:
- *       $ref: '#/components/requestBodies/UserBody'
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
  *     responses:
  *       201:
- *         $ref: '#/components/responses/UserResponse'
+ *         description: Admin user created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       403:
+ *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Permission not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       400:
- *         $ref: '#/components/responses/Invalid'
+ *         description: Invalid payload provided
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.post("/createAdmin", userController.createAdmin.bind(userController));
 
@@ -97,19 +124,35 @@ router.post("/createAdmin", userController.createAdmin.bind(userController));
  * @swagger
  * /users/{id}:
  *   get:
- *     summary: Get a user by ID
+ *     summary: Retrieve a user by ID
  *     tags: [User]
+ *     description: Retrieve a user from the database by ID.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
+ *         description: The user ID
  *     responses:
  *       200:
- *         $ref: '#/components/responses/UserResponse'
+ *         description: A user object.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       403:
+ *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       404:
- *         $ref: '#/components/responses/NotFound'
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.get("/:id", userController.getUserById.bind(userController));
 
@@ -117,17 +160,24 @@ router.get("/:id", userController.getUserById.bind(userController));
  * @swagger
  * /users:
  *   get:
- *     summary: Get all users
+ *     summary: Retrieve a list of users
  *     tags: [User]
+ *     description: Retrieve a list of users from the database.
  *     responses:
  *       200:
- *         description: Lista de usuários
+ *         description: A list of users.
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/User'
+ *       403:
+ *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.get("/", userController.getAllUsers.bind(userController));
 
@@ -135,23 +185,47 @@ router.get("/", userController.getAllUsers.bind(userController));
  * @swagger
  * /users/{id}:
  *   put:
- *     summary: Update a user by ID
+ *     summary: Update a user
  *     tags: [User]
+ *     description: Update an existing user.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
+ *         description: The user ID
  *     requestBody:
- *       $ref: '#/components/requestBodies/UserBody'
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
  *     responses:
  *       200:
- *         $ref: '#/components/responses/UserResponse'
+ *         description: User updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  *       400:
- *         $ref: '#/components/responses/Invalid'
+ *         description: Invalid payload provided
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       404:
- *         $ref: '#/components/responses/NotFound'
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.put("/:id", userController.updateUser.bind(userController));
 
@@ -159,19 +233,35 @@ router.put("/:id", userController.updateUser.bind(userController));
  * @swagger
  * /users/{id}:
  *   delete:
- *     summary: Delete a user by ID
+ *     summary: Delete a user
  *     tags: [User]
+ *     description: Delete an existing user.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
+ *         description: The user ID
  *     responses:
- *       204:
- *         description: Usuário deletado com sucesso
+ *       200:
+ *         description: User deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       403:
+ *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       404:
- *         $ref: '#/components/responses/NotFound'
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.delete("/:id", userController.deleteUser.bind(userController));
 
