@@ -76,6 +76,23 @@ const userController = new UsersController(userService);
  */
 router.post("/create", userController.createUser.bind(userController));
 
+
+/**
+ * @swagger
+ * /users/createAdmin:
+ *   post:
+ *     summary: Create a new Admin User
+ *     tags: [User]
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/UserBody'
+ *     responses:
+ *       201:
+ *         $ref: '#/components/responses/UserResponse'
+ *       400:
+ *         $ref: '#/components/responses/Invalid'
+ */
+router.post("/createAdmin", userController.createAdmin.bind(userController));
+
 /**
  * @swagger
  * /users/{id}:
