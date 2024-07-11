@@ -184,33 +184,34 @@ class UsersController {
       error.code === "P2025"
     ) {
       if (error.meta && error.meta.cause === "No 'Permission' record(s) (needed to inline the relation on 'User' record(s)) was found for a nested connect on one-to-many relation 'PermissionToUser'.") {
-        res.status(404).json({ message: "Permission not found" });
+        res.status(404).json({ error: "Permission not found" });
         return
       }
 
-      res.status(404).json({ message: "User not found" });
+      res.status(404).json({ error: "User not found" });
       return;
     }
 
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.meta) {
       if (error.meta.field_name === "User_permissionId_fkey") {
-        res.status(400).json({ message: "Invalid permission ID" });
+        res.status(400).json({ error: "Invalid permission ID" });
         return;
       } else if (error.meta.field_name === "User_email_key") {
-        res.status(400).json({ message: "This email is already in use" });
+        res.status(400).json({ error: "This email is already in use" });
         return;
       } else if (error.meta.field_name === "User_permissionId") {
-        res.status(400).json({ message: "Invalid permission ID" });
+        res.status(400).json({ error: "Invalid permission ID" });
         return;
       } else if (error.meta.field_name === "User_permissionId_fkey") {
-        res.status(400).json({ message: "Invalid permission ID" });
+        res.status(400).json({ error: "Invalid permission ID" });
         return;
       } else {
         NextFunction();
+        return
       }
     }
 
-    res.status(400).json({ message: error.message || "Life snake 🔫🐍" });
+    res.status(400).json({ error: error.message || "Life snake 🔫🐍" });
   }
 }
 
