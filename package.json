@@ -1,6 +1,6 @@
 {
   "name": "ecommerce-api",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Projeto de ecommerce-api para a disciplina de Linguagem de programação II",
   "main": "src/main.js",
   "author": "GreenSpace",
