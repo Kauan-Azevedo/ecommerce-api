@@ -55,12 +55,35 @@ class UsersService {
   }
 
   async getUserById(id: number) {
-    return await prisma.user.findUnique({ where: { id } });
+    return await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        first_name: true,
+        last_name: true,
+        phone_number: true,
+        createdAt: true,
+        updatedAt: true,
+        permission: {
+          select: {
+            name: true,
+          },
+        }
+      }
+    });
   }
 
   async getAllUsers() {
     return await prisma.user.findMany({
-      include: {
+      select: {
+        id: true,
+        email: true,
+        first_name: true,
+        last_name: true,
+        phone_number: true,
+        createdAt: true,
+        updatedAt: true,
         permission: {
           select: {
             name: true,
