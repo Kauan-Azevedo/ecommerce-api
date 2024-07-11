@@ -3,7 +3,7 @@ import { ProductController } from "../controller/product.controller";
 import { ProductService } from "../services/product.service";
 
 const router = express.Router();
-const productService = new ProductService(); // Instanciando o serviço
+const productService = new ProductService();
 const productController = new ProductController(productService);
 
 /**
@@ -12,21 +12,41 @@ const productController = new ProductController(productService);
  *   schemas:
  *     Product:
  *       type: object
+ *       required:
+ *         - name
+ *         - value
+ *         - stock
  *       properties:
+ *         id:
+ *           type: integer
+ *           description: The auto-generated id of the product
  *         name:
  *           type: string
- *           example: "Product Name"
- *         description:
- *           type: string
- *           example: "Product Description"
+ *           description: The name of the product
  *         value:
  *           type: number
- *           example: 29.99
+ *           description: The value of the product
  *         stock:
  *           type: integer
- *           example: 100
+ *           description: The stock amount of the product
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: The date and time when the product was created
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: The date and time when the product was last updated
+ *       example:
+ *         id: 1
+ *         name: "Product Name"
+ *         value: 29.99
+ *         stock: 100
+ *         createdAt: "2024-01-01T00:00:00.000Z"
+ *         updatedAt: "2024-01-01T00:00:00.000Z"
  *   requestBodies:
  *     ProductBody:
+ *       description: A product object
  *       required: true
  *       content:
  *         application/json:
@@ -34,15 +54,38 @@ const productController = new ProductController(productService);
  *             $ref: '#/components/schemas/Product'
  *   responses:
  *     ProductResponse:
- *       description: A Product object
+ *       description: A product object
  *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Product'
  *     NotFound:
- *       description: The Product was not found
+ *       description: The product was not found
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               error:
+ *                 type: string
+ *                 example: Product not found
  *     Invalid:
  *       description: Invalid data
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               error:
+ *                 type: string
+ *                 example: invalid payload provided.
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: Products
+ *   description: The products managing API
  */
 
 /**
@@ -54,8 +97,12 @@ const productController = new ProductController(productService);
  *     requestBody:
  *       $ref: '#/components/requestBodies/ProductBody'
  *     responses:
- *       200:
- *         $ref: '#/components/responses/ProductResponse'
+ *       201:
+ *         description: The product was successfully created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
  *       400:
  *         $ref: '#/components/responses/Invalid'
  */
@@ -69,9 +116,23 @@ router.post("/create", productController.create.bind(productController));
  *     tags: [Products]
  *     responses:
  *       200:
- *         $ref: '#/components/responses/ProductResponse'
- *       400:
- *         $ref: '#/components/responses/Invalid'
+ *         description: A list of products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Product'
+ *       404:
+ *         description: No products found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: No products found
  */
 router.get("/", productController.getAll.bind(productController));
 
@@ -87,11 +148,17 @@ router.get("/", productController.getAll.bind(productController));
  *         required: true
  *         schema:
  *           type: integer
+ *           example: 1
  *     responses:
  *       200:
- *         $ref: '#/components/responses/ProductResponse'
- *       400:
- *         $ref: '#/components/responses/Invalid'
+ *         description: The product description by id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       404:
+ *         description: The product was not found
+ *         $ref: '#/components/responses/NotFound'
  */
 router.get("/:id", productController.getById.bind(productController));
 
@@ -107,11 +174,19 @@ router.get("/:id", productController.getById.bind(productController));
  *         required: true
  *         schema:
  *           type: integer
+ *           example: 1
  *     requestBody:
  *       $ref: '#/components/requestBodies/ProductBody'
  *     responses:
  *       200:
- *         $ref: '#/components/responses/ProductResponse'
+ *         description: The product was updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       404:
+ *         description: The product was not found
+ *         $ref: '#/components/responses/NotFound'
  *       400:
  *         $ref: '#/components/responses/Invalid'
  */
@@ -129,11 +204,21 @@ router.put("/:id", productController.update.bind(productController));
  *         required: true
  *         schema:
  *           type: integer
+ *           example: 1
  *     responses:
  *       200:
- *         $ref: '#/components/responses/ProductResponse'
- *       400:
- *         $ref: '#/components/responses/Invalid'
+ *         description: The product was deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Product deleted successfully
+ *       404:
+ *         description: The product was not found
+ *         $ref: '#/components/responses/NotFound'
  */
 router.delete("/:id", productController.delete.bind(productController));
 
