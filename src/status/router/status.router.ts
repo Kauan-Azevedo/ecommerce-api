@@ -3,7 +3,7 @@ import { StatusController } from "../controller/status.controller";
 import { StatusService } from "../services/status.service";
 
 const router = express.Router();
-const statusService = new StatusService(); // Instanciando o serviço
+const statusService = new StatusService();
 const statusController = new StatusController(statusService);
 
 /**
@@ -34,14 +34,31 @@ const statusController = new StatusController(statusService);
  *           format: date-time
  *           description: The date and time when the status was deleted
  *       example:
+ *         id: 1
  *         name: waiting payment
+ *         createdAt: "2023-07-11T14:48:00.000Z"
+ *         updatedAt: "2023-07-11T14:48:00.000Z"
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         error:
+ *           type: string
+ *           description: Error message
+ *       example:
+ *         error: "Status not found"
  */
 
 /**
  * @swagger
  * tags:
  *   name: Statuses
- *   description: Create, read, update, and delete the statuses
+ *   description: API for managing statuses
  */
 
 /**
@@ -59,8 +76,14 @@ const statusController = new StatusController(statusService);
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Status'
+ *       404:
+ *         description: No statuses found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.get("/", (req, res) => statusController.getAll(req, res));
+router.get("/", statusController.getAll.bind(statusController));
 
 /**
  * @swagger
@@ -84,8 +107,12 @@ router.get("/", (req, res) => statusController.getAll(req, res));
  *               $ref: '#/components/schemas/Status'
  *       404:
  *         description: The status was not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.get("/:id", (req, res) => statusController.getById(req, res));
+router.get("/:id", statusController.getById.bind(statusController));
 
 /**
  * @swagger
@@ -106,10 +133,14 @@ router.get("/:id", (req, res) => statusController.getById(req, res));
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Status'
- *       500:
- *         description: Some server error
+ *       400:
+ *         description: Invalid payload provided
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post("/create", (req, res) => statusController.create(req, res));
+router.post("/create", statusController.create.bind(statusController));
 
 /**
  * @swagger
@@ -137,12 +168,20 @@ router.post("/create", (req, res) => statusController.create(req, res));
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Status'
+ *       400:
+ *         description: Invalid payload provided
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       404:
  *         description: The status was not found
- *       500:
- *         description: Some error happened
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.put("/:id", (req, res) => statusController.update(req, res));
+router.put("/:id", statusController.update.bind(statusController));
 
 /**
  * @swagger
@@ -160,9 +199,17 @@ router.put("/:id", (req, res) => statusController.update(req, res));
  *     responses:
  *       200:
  *         description: The status was deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Status'
  *       404:
  *         description: The status was not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.delete("/:id", (req, res) => statusController.delete(req, res));
+router.delete("/:id", statusController.delete.bind(statusController));
 
 export default router;

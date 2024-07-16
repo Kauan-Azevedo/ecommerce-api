@@ -4,9 +4,7 @@ import { PaymentStatusService } from "../services/paymentStatus.service";
 
 const router = express.Router();
 const paymentStatusService = new PaymentStatusService();
-const paymentStatusController = new PaymentStatusController(
-  paymentStatusService,
-);
+const paymentStatusController = new PaymentStatusController(paymentStatusService);
 
 /**
  * @swagger
@@ -15,9 +13,24 @@ const paymentStatusController = new PaymentStatusController(
  *     PaymentStatus:
  *       type: object
  *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
  *         name:
  *           type: string
  *           example: "Paid"
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: "2023-07-11T08:00:00Z"
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: "2023-07-11T08:00:00Z"
+ *         deletedAt:
+ *           type: string
+ *           format: date-time
+ *           example: "2023-07-11T08:00:00Z"
  *   requestBodies:
  *     PaymentStatusBody:
  *       required: true
@@ -34,18 +47,34 @@ const paymentStatusController = new PaymentStatusController(
  *             $ref: '#/components/schemas/PaymentStatus'
  *     NotFound:
  *       description: The PaymentStatus was not found
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               error:
+ *                 type: string
+ *                 example: "Payment status not found"
  *     Invalid:
  *       description: Invalid data
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               error:
+ *                 type: string
+ *                 example: "Invalid payload provided."
  */
 
 /**
  * @swagger
  * tags:
  *   name: PaymentStatus
- *   description: Create, read, update, and delete the PaymentStatus
+ *   description: Create, read, update, and delete payment statuses
  */
 
-//Post routes
+// Create a new payment status
 /**
  * @swagger
  * /paymentstatus/create:
@@ -55,8 +84,12 @@ const paymentStatusController = new PaymentStatusController(
  *     requestBody:
  *       $ref: '#/components/requestBodies/PaymentStatusBody'
  *     responses:
- *       200:
- *         $ref: '#/components/responses/PaymentStatusResponse'
+ *       201:
+ *         description: Created PaymentStatus object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PaymentStatus'
  *       400:
  *         $ref: '#/components/responses/Invalid'
  */
@@ -64,7 +97,7 @@ router.post("/create", (req, res) =>
   paymentStatusController.createPaymentStatus(req, res),
 );
 
-//Get routes
+// Get all payment statuses
 /**
  * @swagger
  * /paymentstatus/:
@@ -80,11 +113,14 @@ router.post("/create", (req, res) =>
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/PaymentStatus'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
  */
 router.get("/", (req, res) =>
   paymentStatusController.getAllPaymentStatuses(req, res),
 );
 
+// Get a payment status by ID
 /**
  * @swagger
  * /paymentstatus/{id}:
@@ -100,7 +136,11 @@ router.get("/", (req, res) =>
  *         description: The payment status ID
  *     responses:
  *       200:
- *         $ref: '#/components/responses/PaymentStatusResponse'
+ *         description: Retrieved PaymentStatus object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PaymentStatus'
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
@@ -108,7 +148,7 @@ router.get("/:id", (req, res) =>
   paymentStatusController.getPaymentStatusById(req, res),
 );
 
-//Put routes
+// Update a payment status by ID
 /**
  * @swagger
  * /paymentstatus/{id}:
@@ -126,7 +166,11 @@ router.get("/:id", (req, res) =>
  *       $ref: '#/components/requestBodies/PaymentStatusBody'
  *     responses:
  *       200:
- *         $ref: '#/components/responses/PaymentStatusResponse'
+ *         description: Updated PaymentStatus object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PaymentStatus'
  *       404:
  *         $ref: '#/components/responses/NotFound'
  *       400:
@@ -136,7 +180,7 @@ router.put("/:id", (req, res) =>
   paymentStatusController.updatePaymentStatus(req, res),
 );
 
-//Delete routes
+// Delete a payment status by ID
 /**
  * @swagger
  * /paymentstatus/{id}:

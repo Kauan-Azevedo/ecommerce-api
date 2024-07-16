@@ -13,9 +13,24 @@ const permissionController = new PermissionController(permissionService);
  *     Permission:
  *       type: object
  *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
  *         name:
  *           type: string
  *           example: "Admin"
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: "2023-07-11T08:00:00Z"
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: "2023-07-11T08:00:00Z"
+ *         deletedAt:
+ *           type: string
+ *           format: date-time
+ *           example: "2023-07-11T08:00:00Z"
  *   requestBodies:
  *     PermissionBody:
  *       required: true
@@ -32,8 +47,24 @@ const permissionController = new PermissionController(permissionService);
  *             $ref: '#/components/schemas/Permission'
  *     NotFound:
  *       description: The Permission was not found
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               error:
+ *                 type: string
+ *                 example: "Permission not found"
  *     Invalid:
  *       description: Invalid data
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               error:
+ *                 type: string
+ *                 example: "Invalid payload provided."
  */
 
 /**
@@ -45,7 +76,7 @@ const permissionController = new PermissionController(permissionService);
  *     requestBody:
  *       $ref: '#/components/requestBodies/PermissionBody'
  *     responses:
- *       200:
+ *       201:
  *         $ref: '#/components/responses/PermissionResponse'
  *       400:
  *         $ref: '#/components/responses/Invalid'
@@ -63,9 +94,15 @@ router.post(
  *     tags: [Permissions]
  *     responses:
  *       200:
- *         $ref: '#/components/responses/PermissionResponse'
- *       400:
- *         $ref: '#/components/responses/Invalid'
+ *         description: A list of Permission objects
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Permission'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
  */
 router.get("/", permissionController.getPermissions.bind(permissionController));
 
@@ -84,8 +121,8 @@ router.get("/", permissionController.getPermissions.bind(permissionController));
  *     responses:
  *       200:
  *         $ref: '#/components/responses/PermissionResponse'
- *       400:
- *         $ref: '#/components/responses/Invalid'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
  */
 router.get(
   "/:id",
@@ -111,6 +148,8 @@ router.get(
  *         $ref: '#/components/responses/PermissionResponse'
  *       400:
  *         $ref: '#/components/responses/Invalid'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
  */
 router.put(
   "/:id",
@@ -132,11 +171,12 @@ router.put(
  *     responses:
  *       200:
  *         $ref: '#/components/responses/PermissionResponse'
- *       400:
- *         $ref: '#/components/responses/Invalid'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
  */
 router.delete(
   "/:id",
   permissionController.deletePermission.bind(permissionController),
 );
+
 export default router;

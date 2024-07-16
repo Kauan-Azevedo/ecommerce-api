@@ -4,9 +4,7 @@ import { PaymentMethodController } from "../controller/paymentMethod.controller"
 
 const router = express.Router();
 const paymentMethodService = new PaymentMethodService();
-const paymentMethodController = new PaymentMethodController(
-  paymentMethodService,
-);
+const paymentMethodController = new PaymentMethodController(paymentMethodService);
 
 /**
  * @swagger
@@ -15,9 +13,24 @@ const paymentMethodController = new PaymentMethodController(
  *     PaymentMethod:
  *       type: object
  *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
  *         name:
  *           type: string
  *           example: "Credit Card"
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: "2023-07-11T08:00:00Z"
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: "2023-07-11T08:00:00Z"
+ *         deletedAt:
+ *           type: string
+ *           format: date-time
+ *           example: "2023-07-11T08:00:00Z"
  *   requestBodies:
  *     PaymentMethodBody:
  *       required: true
@@ -34,19 +47,34 @@ const paymentMethodController = new PaymentMethodController(
  *             $ref: '#/components/schemas/PaymentMethod'
  *     NotFound:
  *       description: The PaymentMethod was not found
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               error:
+ *                 type: string
+ *                 example: "Payment method not found"
  *     Invalid:
  *       description: Invalid data
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               error:
+ *                 type: string
+ *                 example: "Invalid payload provided."
  */
 
 /**
  * @swagger
  * tags:
  *   name: PaymentMethod
- *   description: Create, read, update, and delete the PaymentMethod
+ *   description: Create, read, update, and delete payment methods
  */
 
-//Post routes
-
+// Create a new payment method
 /**
  * @swagger
  * /paymentmethod/create:
@@ -56,8 +84,12 @@ const paymentMethodController = new PaymentMethodController(
  *     requestBody:
  *       $ref: '#/components/requestBodies/PaymentMethodBody'
  *     responses:
- *       200:
- *         $ref: '#/components/responses/PaymentMethodResponse'
+ *       201:
+ *         description: Created PaymentMethod object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PaymentMethod'
  *       400:
  *         $ref: '#/components/responses/Invalid'
  */
@@ -65,8 +97,7 @@ router.post("/create", (req, res) =>
   paymentMethodController.createPaymentMethod(req, res),
 );
 
-//Get routes
-
+// Get all payment methods
 /**
  * @swagger
  * /paymentmethod/:
@@ -87,6 +118,7 @@ router.get("/", (req, res) =>
   paymentMethodController.getAllPaymentMethods(req, res),
 );
 
+// Get payment method by ID
 /**
  * @swagger
  * /paymentmethod/{id}:
@@ -110,13 +142,11 @@ router.get("/", (req, res) =>
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-
 router.get("/:id", (req, res) =>
   paymentMethodController.getPaymentMethodById(req, res),
 );
 
-//Put routes
-
+// Update a payment method by ID
 /**
  * @swagger
  * /paymentmethod/{id}:
@@ -134,21 +164,21 @@ router.get("/:id", (req, res) =>
  *       $ref: '#/components/requestBodies/PaymentMethodBody'
  *     responses:
  *       200:
- *         description: A payment method object
+ *         description: Updated payment method object
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/PaymentMethod'
  *       404:
  *         $ref: '#/components/responses/NotFound'
+ *       400:
+ *         $ref: '#/components/responses/Invalid'
  */
-
 router.put("/:id", (req, res) =>
   paymentMethodController.updatePaymentMethod(req, res),
 );
 
-//Delete routes
-
+// Delete a payment method by ID
 /**
  * @swagger
  * /paymentmethod/{id}:
@@ -164,7 +194,7 @@ router.put("/:id", (req, res) =>
  *           type: integer
  *     responses:
  *       200:
- *         description: A payment method object
+ *         description: Deleted payment method object
  *         content:
  *           application/json:
  *             schema:
@@ -172,7 +202,6 @@ router.put("/:id", (req, res) =>
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-
 router.delete("/:id", (req, res) =>
   paymentMethodController.deletePaymentMethod(req, res),
 );
