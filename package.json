@@ -13,7 +13,7 @@
     "seed": "ts-node prisma/seeders/make-seed.ts",
     "watch": "tsc-watch --onSuccess \"npm run alias\"",
     "alias": "tsc-alias && npm run start",
-    "start": "nodemon src/main.js",
+    "start": "nodemon src/main.ts",
     "ts.check": "tsc --project tsconfig.json",
     "start:dev": "nodemon --watch 'src/' --exec 'ts-node -r tsconfig-paths/register  src/main.ts' -e ts",
     "create-module": "ts-node src/utils/create-module.ts",
