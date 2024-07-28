@@ -54,7 +54,7 @@ app.use("/status", status_router_1.default);
 app.use("/report", report_router_1.default);
 // Rota inicial
 app.get("/", (req, res) => {
-    res.send("Welcome to Ecommerce API! Go to <strong><a href='/api-docs'>/api-docs</a></strong> to see the documentation");
+    res.send("Welcome to E-commerce API! Go to <strong><a href='/api-docs'>/api-docs</a></strong> to see the documentation");
 });
 // Iniciar o servidor
 const server = (0, server_1.default)(app, port, isDev);
