@@ -7,12 +7,14 @@
   "license": "MIT",
   "scripts": {
     "make-url": "ts-node src/utils/make-databaseurl.ts",
-    "build": "tsc && tsc-alias",
+    "add-build": "git add dist",
+    "build": "rimraf dist && tsc",
     "vercel-build": "prisma generate && prisma migrate deploy && npm run build",
     "seed": "ts-node prisma/seeders/make-seed.ts",
     "watch": "tsc-watch --onSuccess \"npm run alias\"",
     "alias": "tsc-alias && npm run start",
-    "start": "node dist/src/main.js",
+    "start": "nodemon src/main.js",
+    "ts.check": "tsc --project tsconfig.json",
     "start:dev": "nodemon --watch 'src/' --exec 'ts-node -r tsconfig-paths/register  src/main.ts' -e ts",
     "create-module": "ts-node src/utils/create-module.ts",
     "dev": "npm run watch",
@@ -23,6 +25,11 @@
     "test:staged": "npm run test --findRelatedTests",
     "test:push": "npm run test --coverage"
   },
+  "pre-commit": [
+    "ts.check",
+    "build",
+    "add-build"
+  ],
   "dependencies": {
     "@prisma/client": "^5.15.1",
     "bcrypt": "^5.1.1",
@@ -63,7 +70,9 @@
     "lint-staged": "^15.2.7",
     "nodemon": "^3.1.0",
     "npm-run-all": "^4.1.5",
+    "pre-commit": "^1.2.2",
     "prettier": "^3.3.2",
+    "rimraf": "^6.0.1",
     "sequelize-cli": "^6.6.2",
     "ts-jest": "^29.1.5",
     "ts-node": "^10.9.2",

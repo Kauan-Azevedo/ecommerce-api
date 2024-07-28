@@ -13,7 +13,7 @@
 **/*.log
 
 # Diretório de build
-**/dist
+#**/dist
 
 # Arquivos de ambiente
 **/.env
